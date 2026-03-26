@@ -77,7 +77,7 @@ export default function Experience() {
         </div>
 
         {/* Header */}
-        <section className="pt-10 md:pt-28 pb-14 md:pb-16 border-b border-warm-border">
+        <section className="pt-10 md:pt-28 pb-14 md:pb-16">
           <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted mb-4 block">
             Background
           </span>
