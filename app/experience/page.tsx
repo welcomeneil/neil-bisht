@@ -131,7 +131,7 @@ export default function Experience() {
         </section>
 
         {/* Skills */}
-        <section className="border-t border-warm-border pt-12 pb-24">
+        <section className="border-t border-warm-border pt-12 md:pb-24">
           <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted mb-6 block">
             Skills
           </span>
@@ -145,7 +145,7 @@ export default function Experience() {
         </section>
 
         {/* Mobile forward nav */}
-        <div className="md:hidden border-t border-warm-border py-8 pb-16 mt-12">
+        <div className="md:hidden mt-12 border-t border-warm-border pt-12 pb-16">
           <a
             href="/musings"
             className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"

@@ -105,7 +105,7 @@ export default function Work() {
         {/* Grid */}
         <motion.div
           layout
-          className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 pb-24"
+          className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 md:pb-24"
         >
           {filtered.map((item, i) => (
             <motion.div
@@ -140,7 +140,7 @@ export default function Work() {
         </motion.div>
 
         {/* Mobile forward nav */}
-        <div className="md:hidden border-t border-warm-border py-8 pb-16">
+        <div className="md:hidden mt-10 border-t border-warm-border pt-10 pb-16">
           <Link
             href="/experience"
             className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"

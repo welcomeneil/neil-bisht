@@ -35,7 +35,7 @@ export default function Musings() {
         </section>
 
         {/* Post list */}
-        <section className="pb-24">
+        <section className="md:pb-24">
           {MUSINGS.map((post) => (
             <Link
               key={post.slug}
@@ -71,7 +71,7 @@ export default function Musings() {
         </section>
 
         {/* Mobile forward nav */}
-        <div className="md:hidden border-t border-warm-border py-8 pb-16">
+        <div className="md:hidden border-t border-warm-border pt-8 pb-16">
           <a
             href="/work"
             className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
