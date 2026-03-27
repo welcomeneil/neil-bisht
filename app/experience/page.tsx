@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Experience — Neil",
@@ -71,9 +72,9 @@ export default function Experience() {
       <div className="max-w-6xl mx-auto px-8 md:px-12">
         {/* Mobile back link */}
         <div className="md:hidden pt-10 pb-2">
-          <a href="/" className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200">
+          <Link href="/" className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200">
             ← Neil
-          </a>
+          </Link>
         </div>
 
         {/* Header */}
@@ -146,12 +147,12 @@ export default function Experience() {
 
         {/* Mobile forward nav */}
         <div className="md:hidden mt-12 border-t border-warm-border pt-12 pb-16">
-          <a
+          <Link
             href="/musings"
             className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
           >
             Next: Musings →
-          </a>
+          </Link>
         </div>
       </div>
     </main>

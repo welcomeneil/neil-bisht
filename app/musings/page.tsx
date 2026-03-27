@@ -19,9 +19,9 @@ export default function Musings() {
       <div className="max-w-6xl mx-auto px-8 md:px-12">
         {/* Mobile back link */}
         <div className="md:hidden pt-10 pb-2">
-          <a href="/" className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200">
+          <Link href="/" className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200">
             ← Neil
-          </a>
+          </Link>
         </div>
 
         {/* Header */}
@@ -35,19 +35,19 @@ export default function Musings() {
         </section>
 
         {/* Post list */}
-        <section className="md:pb-24">
+        <section className="border-t border-warm-border md:pb-24">
           {MUSINGS.map((post) => (
             <Link
               key={post.slug}
               href={`/musings/${post.slug}`}
-              className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-10 py-8 border-t border-warm-border hover:border-foreground transition-colors duration-200"
+              className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-10 py-8 border-b border-warm-border hover:border-foreground transition-colors duration-200"
             >
               {/* Left: date + category */}
               <div className="flex sm:flex-col gap-3 sm:gap-1 sm:w-36 shrink-0">
-                <span className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted">
+                <span className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted group-hover:text-foreground transition-colors duration-200">
                   {post.date}
                 </span>
-                <span className="font-sans text-[11px] tracking-[0.12em] uppercase text-accent">
+                <span className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted group-hover:text-accent transition-colors duration-200">
                   {categoryLabel[post.category]}
                 </span>
               </div>
@@ -57,7 +57,7 @@ export default function Musings() {
                 <h2 className="font-display text-[22px] md:text-[26px] font-light text-foreground group-hover:text-accent transition-colors duration-200 leading-tight mb-2">
                   {post.title}
                 </h2>
-                <p className="font-sans text-[14px] text-muted leading-relaxed line-clamp-2">
+                <p className="font-sans text-[14px] text-muted group-hover:text-foreground transition-colors duration-200 leading-relaxed line-clamp-2">
                   {post.excerpt}
                 </p>
               </div>
@@ -72,12 +72,12 @@ export default function Musings() {
 
         {/* Mobile forward nav */}
         <div className="md:hidden border-t border-warm-border pt-8 pb-16">
-          <a
+          <Link
             href="/work"
             className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
           >
             Next: Work →
-          </a>
+          </Link>
         </div>
       </div>
     </main>

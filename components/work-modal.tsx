@@ -39,22 +39,17 @@ export default function WorkModal({
       {item && (
         <motion.div
           key="modal-overlay"
-          className="fixed inset-0 z-50"
+          className="fixed inset-0 z-50 bg-foreground/40 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
+          onClick={onClose}
         >
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-background/85 backdrop-blur-sm"
-            onClick={onClose}
-          />
-
           {/* Centered panel */}
           <div className="relative h-full flex items-center justify-center p-4 md:p-12 pointer-events-none">
             <motion.div
-              className="pointer-events-auto bg-background max-w-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain flex flex-col"
+              className="pointer-events-auto bg-background rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain flex flex-col [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
@@ -63,7 +58,7 @@ export default function WorkModal({
             >
               {/* Image with close button overlaid */}
               <div
-                className="relative w-full aspect-[16/9] overflow-hidden shrink-0"
+                className="relative w-full aspect-[16/9] overflow-hidden shrink-0 rounded-t-2xl"
                 style={{ backgroundColor: item.bg }}
               >
                 {item.imageUrl && (
@@ -75,13 +70,6 @@ export default function WorkModal({
                     sizes="(max-width: 768px) 100vw, 672px"
                   />
                 )}
-                <button
-                  onClick={onClose}
-                  aria-label="Close"
-                  className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-background/80 backdrop-blur-sm text-foreground hover:bg-background transition-colors duration-200 text-[18px] leading-none"
-                >
-                  ×
-                </button>
               </div>
 
               {/* Content */}
@@ -137,6 +125,16 @@ export default function WorkModal({
                     )}
                   </>
                 )}
+              </div>
+
+              {/* Mobile close button — sticky at bottom of scroll area */}
+              <div className="md:hidden sticky bottom-0 flex justify-end px-7 pb-6 pt-10 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none">
+                <button
+                  onClick={onClose}
+                  className="pointer-events-auto font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200 bg-background border border-warm-border rounded-full px-4 py-2"
+                >
+                  Return
+                </button>
               </div>
             </motion.div>
           </div>
