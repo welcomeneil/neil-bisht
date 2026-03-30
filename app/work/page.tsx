@@ -63,19 +63,9 @@ export default function Work() {
   return (
     <main className="min-h-screen pt-0 md:pt-16">
       <div className="max-w-6xl mx-auto px-8 md:px-12">
-        {/* Mobile back link */}
-        <div className="md:hidden pt-10 pb-2">
-          <Link href="/" className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200">
-            ← Neil
-          </Link>
-        </div>
-
         {/* Header */}
         <section className="pt-10 md:pt-28 pb-10 md:pb-12">
-          <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted mb-4 block">
-            Portfolio
-          </span>
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
             <h1 className="font-display text-[clamp(36px,5vw,56px)] font-light italic leading-tight text-foreground">
               Work
             </h1>
@@ -139,13 +129,19 @@ export default function Work() {
           ))}
         </motion.div>
 
-        {/* Mobile forward nav */}
-        <div className="md:hidden mt-10 border-t border-warm-border pt-10 pb-16">
+        {/* Mobile forward/back nav */}
+        <div className="md:hidden mt-10 border-t border-warm-border pt-10 pb-16 flex justify-between">
+          <Link
+            href="/musings"
+            className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
+          >
+            ← Musings
+          </Link>
           <Link
             href="/experience"
             className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
           >
-            Next: Experience →
+            Experience →
           </Link>
         </div>
       </div>

@@ -17,19 +17,9 @@ export default function Musings() {
   return (
     <main className="min-h-screen pt-0 md:pt-16">
       <div className="max-w-6xl mx-auto px-8 md:px-12">
-        {/* Mobile back link */}
-        <div className="md:hidden pt-10 pb-2">
-          <Link href="/" className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200">
-            ← Neil
-          </Link>
-        </div>
-
         {/* Header */}
         <section className="pt-10 md:pt-28 pb-14 md:pb-16">
-          <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted mb-4 block">
-            Writing
-          </span>
-          <h1 className="font-display text-[clamp(36px,5vw,56px)] font-light italic leading-tight text-foreground">
+<h1 className="font-display text-[clamp(36px,5vw,56px)] font-light italic leading-tight text-foreground">
             Musings
           </h1>
         </section>
@@ -70,13 +60,19 @@ export default function Musings() {
           ))}
         </section>
 
-        {/* Mobile forward nav */}
-        <div className="md:hidden border-t border-warm-border pt-8 pb-16">
+        {/* Mobile forward/back nav */}
+        <div className="md:hidden pt-8 pb-16 flex justify-between">
+          <Link
+            href="/experience"
+            className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
+          >
+            ← Experience
+          </Link>
           <Link
             href="/work"
             className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
           >
-            Next: Work →
+            Work →
           </Link>
         </div>
       </div>
