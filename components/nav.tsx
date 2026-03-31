@@ -16,6 +16,7 @@ export default function Nav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [connectOpen, setConnectOpen] = useState(false);
+  const [skipTransition, setSkipTransition] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileRef = useRef<HTMLDivElement>(null);
 
@@ -25,10 +26,12 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close on route change + reset scroll state
+  // Close on route change + instant reset (no fade-out)
   useEffect(() => {
+    setSkipTransition(true);
     setConnectOpen(false);
     setScrolled(false);
+    requestAnimationFrame(() => setSkipTransition(false));
   }, [pathname]);
 
   // Close on click outside
@@ -145,7 +148,9 @@ export default function Nav() {
 
       {/* Mobile Connect — fixed top bar, scroll-aware */}
       <div
-        className={`md:hidden fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`md:hidden fixed top-0 left-0 right-0 z-50 ${
+          skipTransition ? "" : "transition-all duration-500"
+        } ${
           scrolled
             ? "border-b border-warm-border bg-background/90 backdrop-blur-sm"
             : "opacity-0 pointer-events-none"

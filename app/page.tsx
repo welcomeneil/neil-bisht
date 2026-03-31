@@ -26,9 +26,9 @@ export default function Home() {
         <section className="pt-0 md:pt-28">
           <div className="max-w-3xl">
             <h1 className="font-display text-[clamp(48px,7vw,80px)] font-light leading-[1.05] tracking-tight text-foreground mb-6">
-              Neil makes
+              Neil crafts
               <br />
-              pretty things.
+              cool things.
             </h1>
             <p className="font-sans text-[15px] md:text-[16px] text-muted leading-relaxed max-w-md">
               Drawing, tattooing, and building experiences{" "}
