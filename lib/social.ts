@@ -4,10 +4,10 @@ export interface SocialLink {
 }
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { label: "Email", href: "mailto:neil@example.com" },
-  { label: "Instagram", href: "https://instagram.com/" },
-  { label: "SoundCloud", href: "https://soundcloud.com/" },
-  { label: "GitHub", href: "https://github.com/" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/" },
-  { label: "Old Portfolio", href: "https://example.com" },
+  { label: "email", href: "mailto:neilbst1@gmail.com" },
+  { label: "instagram", href: "https://www.instagram.com/pocketchbook/" },
+  { label: "soundcloud", href: "https://soundcloud.com/cxnxry" },
+  { label: "github", href: "https://github.com/welcomeneil/" },
+  { label: "linkedin", href: "https://www.linkedin.com/in/neil-bisht/" },
+  { label: "old portfolio", href: "https://welcomeneil.github.io/" },
 ];

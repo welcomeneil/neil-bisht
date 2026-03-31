@@ -1,20 +1,21 @@
 import Link from "next/link";
+import CyclingVerb from "@/components/cycling-verb";
 
 const sections = [
   {
     href: "/work",
-    label: "Work",
-    description: "Tattoos, drawings, software, design",
+    label: "work",
+    description: "software, design, tattoos, drawings... what else?",
   },
   {
     href: "/experience",
-    label: "Experience",
-    description: "What I've built and where I've been",
+    label: "experience",
+    description: "what i've built and where i've been",
   },
   {
     href: "/musings",
-    label: "Musings",
-    description: "Thoughts worth writing down",
+    label: "musings",
+    description: "thoughts maybe worth jotting down",
   },
 ];
 
@@ -26,14 +27,14 @@ export default function Home() {
         <section className="pt-0 md:pt-28">
           <div className="max-w-3xl">
             <h1 className="font-display text-[clamp(48px,7vw,80px)] font-light leading-[1.05] tracking-tight text-foreground mb-6">
-              Neil crafts
+              neil <CyclingVerb />
               <br />
-              cool things.
+              cool shit
             </h1>
             <p className="font-sans text-[15px] md:text-[16px] text-muted leading-relaxed max-w-md">
-              Drawing, tattooing, and building experiences{" "}
+              drawing, tattooing, and building experiences{" "}
               <br className="hidden md:block" />
-              people actually want to use.
+              people actually want to use
             </p>
           </div>
         </section>

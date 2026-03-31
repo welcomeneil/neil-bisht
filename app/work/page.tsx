@@ -10,11 +10,11 @@ import WorkModal from "@/components/work-modal";
 type Filter = WorkCategory | "all";
 
 const filters: { value: Filter; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "tattoos", label: "Tattoos" },
-  { value: "drawings", label: "Drawings" },
-  { value: "software", label: "Software" },
-  { value: "design", label: "Design" },
+  { value: "all", label: "all" },
+  { value: "tattoos", label: "tattoos" },
+  { value: "drawings", label: "drawings" },
+  { value: "software", label: "software" },
+  { value: "design", label: "design" },
 ];
 
 function WorkCard({
@@ -67,7 +67,7 @@ export default function Work() {
         <section className="pt-10 md:pt-28 pb-10 md:pb-12">
 <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
             <h1 className="font-display text-[clamp(36px,5vw,56px)] font-light italic leading-tight text-foreground">
-              Work
+              work
             </h1>
 
             {/* Filter tabs */}
@@ -76,7 +76,7 @@ export default function Work() {
                 <button
                   key={value}
                   onClick={() => setActive(value)}
-                  className={`font-sans text-[11px] tracking-[0.12em] uppercase px-3 py-1.5 border transition-all duration-200 ${
+                  className={`font-sans text-[11px] tracking-wide px-3 py-1.5 border transition-all duration-200 ${
                     active === value
                       ? "border-foreground text-foreground"
                       : "border-warm-border text-muted hover:border-foreground hover:text-foreground"
@@ -120,8 +120,8 @@ export default function Work() {
                   <p className="font-sans text-[13px] text-foreground leading-snug">
                     {item.title}
                   </p>
-                  <p className="font-sans text-[11px] tracking-[0.1em] uppercase text-muted mt-0.5">
-                    {item.category} · {item.year}
+                  <p className="font-sans text-[11px] tracking-wide text-muted mt-0.5">
+                    {item.category}
                   </p>
                 </div>
               </div>
@@ -133,15 +133,15 @@ export default function Work() {
         <div className="md:hidden mt-10 border-t border-warm-border pt-10 pb-16 flex justify-between">
           <Link
             href="/musings"
-            className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
+            className="font-sans text-[11px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
           >
-            ← Musings
+            ← musings
           </Link>
           <Link
             href="/experience"
-            className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
+            className="font-sans text-[11px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
           >
-            Experience →
+            experience →
           </Link>
         </div>
       </div>

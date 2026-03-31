@@ -73,7 +73,7 @@ export default function Experience() {
         {/* Header */}
         <section className="pt-10 md:pt-28 pb-14 md:pb-16">
 <h1 className="font-display text-[clamp(36px,5vw,56px)] font-light italic leading-tight text-foreground">
-            Experience
+            experience
           </h1>
         </section>
 
@@ -87,7 +87,7 @@ export default function Experience() {
               >
                 {/* Left: meta */}
                 <div className="flex flex-col gap-1">
-                  <span className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted">
+                  <span className="font-sans text-[11px] tracking-wide text-muted">
                     {job.period}
                   </span>
                   <span className="font-sans text-[11px] text-muted opacity-70">
@@ -139,15 +139,15 @@ export default function Experience() {
         <div className="md:hidden mt-12 border-t border-warm-border pt-12 pb-16 flex justify-between">
           <Link
             href="/work"
-            className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
+            className="font-sans text-[11px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
           >
-            ← Work
+            ← work
           </Link>
           <Link
             href="/musings"
-            className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
+            className="font-sans text-[11px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
           >
-            Musings →
+            musings →
           </Link>
         </div>
       </div>

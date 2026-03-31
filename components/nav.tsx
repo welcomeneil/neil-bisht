@@ -7,9 +7,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { SOCIAL_LINKS } from "@/lib/social";
 
 const links = [
-  { href: "/work", label: "Work" },
-  { href: "/experience", label: "Experience" },
-  { href: "/musings", label: "Musings" },
+  { href: "/work", label: "work" },
+  { href: "/experience", label: "experience" },
+  { href: "/musings", label: "musings" },
 ];
 
 export default function Nav() {
@@ -63,11 +63,11 @@ export default function Nav() {
   const connectButton = (
     <button
       onClick={() => setConnectOpen((prev) => !prev)}
-      className={`font-sans tracking-[0.12em] uppercase transition-colors duration-200 ${
+      className={`font-sans text-[13px] tracking-wide transition-colors duration-200 ${
         connectOpen ? "text-foreground" : "text-muted hover:text-foreground"
       }`}
     >
-      Connect
+      connect
     </button>
   );
 
@@ -79,7 +79,7 @@ export default function Nav() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className="absolute right-0 top-full mt-4 flex flex-col gap-3 py-4 px-5 border border-warm-border bg-background min-w-[160px]"
+          className="absolute right-0 top-full mt-4 flex flex-col gap-3 py-4 px-5 border border-warm-border bg-background min-w-[160px] rounded-xl"
         >
           {SOCIAL_LINKS.map((link, i) => (
             <motion.a
@@ -95,7 +95,7 @@ export default function Nav() {
                 delay: i * 0.05,
                 ease: "easeOut",
               }}
-              className="font-sans text-[12px] tracking-wider uppercase text-muted hover:text-foreground transition-colors duration-200 whitespace-nowrap"
+              className="font-sans text-[12px] tracking-wide text-muted hover:text-foreground transition-colors duration-200 whitespace-nowrap"
             >
               {link.label}
             </motion.a>
@@ -120,7 +120,7 @@ export default function Nav() {
             href="/"
             className="font-display text-[17px] italic tracking-wide text-foreground hover:text-accent transition-colors duration-200"
           >
-            Neil
+            neil
           </Link>
 
           <nav className="flex items-center gap-8">
@@ -128,7 +128,7 @@ export default function Nav() {
               <Link
                 key={href}
                 href={href}
-                className={`font-sans text-[13px] tracking-wider uppercase transition-colors duration-200 ${
+                className={`font-sans text-[13px] tracking-wide transition-colors duration-200 ${
                   pathname === href || pathname.startsWith(href + "/")
                     ? "text-foreground"
                     : "text-muted hover:text-foreground"
@@ -161,7 +161,7 @@ export default function Nav() {
             href="/"
             className="font-display text-[17px] italic tracking-wide text-foreground hover:text-accent transition-colors duration-200 pointer-events-auto"
           >
-            Neil
+            neil
           </Link>
           <div className="relative text-[11px] pointer-events-auto" ref={mobileRef}>
             {connectButton}

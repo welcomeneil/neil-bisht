@@ -7,10 +7,10 @@ export const metadata: Metadata = {
 };
 
 const categoryLabel: Record<string, string> = {
-  software: "Software",
-  meditation: "Meditation",
-  creativity: "Creativity",
-  life: "Life",
+  software: "software",
+  meditation: "meditation",
+  creativity: "creativity",
+  life: "life",
 };
 
 export default function Musings() {
@@ -20,7 +20,7 @@ export default function Musings() {
         {/* Header */}
         <section className="pt-10 md:pt-28 pb-14 md:pb-16">
 <h1 className="font-display text-[clamp(36px,5vw,56px)] font-light italic leading-tight text-foreground">
-            Musings
+            musings
           </h1>
         </section>
 
@@ -34,10 +34,10 @@ export default function Musings() {
             >
               {/* Left: date + category */}
               <div className="flex sm:flex-col gap-3 sm:gap-1 sm:w-36 shrink-0">
-                <span className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted group-hover:text-foreground transition-colors duration-200">
+                <span className="font-sans text-[11px] tracking-wide text-muted group-hover:text-foreground transition-colors duration-200">
                   {post.date}
                 </span>
-                <span className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted group-hover:text-accent transition-colors duration-200">
+                <span className="font-sans text-[11px] tracking-wide text-muted group-hover:text-accent transition-colors duration-200">
                   {categoryLabel[post.category]}
                 </span>
               </div>
@@ -64,15 +64,15 @@ export default function Musings() {
         <div className="md:hidden pt-8 pb-16 flex justify-between">
           <Link
             href="/experience"
-            className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
+            className="font-sans text-[11px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
           >
-            ← Experience
+            ← experience
           </Link>
           <Link
             href="/work"
-            className="font-sans text-[11px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
+            className="font-sans text-[11px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
           >
-            Work →
+            work →
           </Link>
         </div>
       </div>

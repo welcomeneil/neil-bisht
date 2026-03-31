@@ -101,15 +101,6 @@ export default async function MusingPost({
           </div>
         </article>
 
-        {/* Footer nav */}
-        <div className="border-t border-warm-border py-10 pb-20">
-          <Link
-            href="/musings"
-            className="font-sans text-[12px] tracking-[0.12em] uppercase text-muted hover:text-foreground transition-colors duration-200"
-          >
-            ← All musings
-          </Link>
-        </div>
       </div>
     </main>
   );
