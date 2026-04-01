@@ -146,20 +146,24 @@ export default function Nav() {
         </div>
       </header>
 
-      {/* Mobile Connect — fixed top bar, scroll-aware */}
+      {/* Mobile nav — fixed top bar, scroll-aware */}
       <div
-        className={`md:hidden fixed top-0 left-0 right-0 z-50 ${
+        className={`md:hidden fixed top-0 left-0 right-0 z-50 pointer-events-none border-b ${
           skipTransition ? "" : "transition-all duration-500"
         } ${
           scrolled
-            ? "border-b border-warm-border bg-background/90 backdrop-blur-sm"
-            : "opacity-0 pointer-events-none"
+            ? "border-warm-border bg-background/90 backdrop-blur-sm"
+            : "border-transparent"
         }`}
       >
         <div className="flex justify-between items-center px-8 h-14">
           <Link
             href="/"
-            className="font-display text-[17px] italic tracking-wide text-foreground hover:text-accent transition-colors duration-200 pointer-events-auto"
+            className={`font-display text-[17px] italic tracking-wide text-foreground hover:text-accent pointer-events-auto ${
+              skipTransition ? "" : "transition-all duration-500"
+            } ${
+              scrolled ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
           >
             neil
           </Link>

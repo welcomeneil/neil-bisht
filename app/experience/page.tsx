@@ -7,63 +7,66 @@ export const metadata: Metadata = {
 
 const experience = [
   {
-    company: "Lattice",
-    role: "Senior Product Designer",
-    period: "2024 — Present",
-    location: "San Francisco, CA",
-    bullets: [
-      "Led end-to-end design for the performance management suite, reducing time-to-review by 34%.",
-      "Established the Lattice Design System's foundational token architecture across 3 platforms.",
-      "Partnered with engineering to ship a redesigned onboarding flow that lifted activation by 22%.",
-    ],
-  },
-  {
-    company: "Figma",
-    role: "Design Engineer",
-    period: "2022 — 2024",
-    location: "San Francisco, CA",
-    bullets: [
-      "Built interactive prototyping primitives used by millions of designers daily.",
-      "Drove technical design decisions on the Variables feature from concept to GA.",
-      "Collaborated across design and infrastructure to improve canvas render performance.",
-    ],
-  },
-  {
-    company: "Linear",
-    role: "Product Manager",
-    period: "2020 — 2022",
-    location: "Remote",
-    bullets: [
-      "Owned the roadmap for Linear's integrations ecosystem — GitHub, Figma, Slack, and custom webhooks.",
-      "Defined and shipped Cycles, a sprint planning feature adopted by 60% of teams within 90 days.",
-      "Worked directly with founders to establish Linear's design philosophy and product principles.",
-    ],
-  },
-  {
-    company: "Palantir Technologies",
-    role: "Solutions Engineer",
-    period: "2017 — 2020",
+    company: "Conductor",
+    role: "Sales Development Representative",
+    period: "2025 — Present",
     location: "New York, NY",
     bullets: [
-      "Deployed and customized Foundry data platforms for Fortune 500 clients in healthcare and logistics.",
-      "Bridged technical requirements with product teams to accelerate enterprise integration timelines.",
-      "Mentored junior engineers and led internal design-thinking workshops across the solutions org.",
+      "Generate 30+ qualified meetings with enterprise leaders per quarter through targeted outbound and strategic account research.",
+      "Leverage a technical background to articulate Conductor's AI-driven search intelligence platform to both technical and non-technical stakeholders & customers — translating API capabilities into immediate business value.",
+      "Collaborate with Solutions Architects on tailored product demos and pre-sales consultations, bridging customer needs and technical solutions.",
+    ],
+  },
+  {
+    company: "Pacific Life",
+    role: "Software Engineer",
+    period: "2024",
+    location: "Newport Beach, CA",
+    bullets: [
+      "Optimized APIs to improve response time by 15% through minimizing database roundtrips and reducing aggregate function overhead.",
+      "Consolidated AWS Lambda functions, reducing infrastructure footprint and simplifying deployment complexity.",
+      "Wrote robust unit tests and led in-house QA to ensure code stability before production.",
+    ],
+  },
+  {
+    company: "UC Irvine — Texera Project",
+    role: "Undergraduate Researcher",
+    period: "2023",
+    location: "Irvine, CA",
+    bullets: [
+      "Collaborated with Professor Chen Li on Texera — a cloud-based no-code platform universalizing data analytics and machine learning.",
+      "Built new operator types in Scala, expanding the platform's visualization capabilities and broadening its value for non-technical end users.",
+    ],
+  },
+  {
+    company: "Tech4Good Laboratory",
+    role: "Web Developer",
+    period: "2021 — 2022",
+    location: "Santa Cruz, CA",
+    bullets: [
+      "Led a 4-person team to design and build responsive web pages, lifting measured user experience metrics by 11%.",
+      "Translated Figma designs into pixel-perfect, production-ready components using CSS flexbox, establishing responsive layout patterns across the site.",
     ],
   },
 ];
 
 const skills = [
-  "Product Design",
-  "Design Engineering",
-  "Design Systems",
-  "Figma",
-  "React",
+  "Python",
   "TypeScript",
-  "Product Strategy",
-  "User Research",
-  "Prototyping",
-  "Motion Design",
+  "JavaScript",
+  "React",
+  "Next.js",
+  "Node.js",
+  "Supabase",
+  "PostgreSQL",
+  "AWS",
+  "Docker",
+  "Figma",
+  "REST APIs",
+  "CI/CD",
   "Illustration",
+  "Design",
+  "Prototyping",
 ];
 
 export default function Experience() {
@@ -123,8 +126,8 @@ export default function Experience() {
 
         {/* Skills */}
         <section className="border-t border-warm-border pt-12 md:pb-24">
-          <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted mb-6 block">
-            Skills
+          <span className="font-sans text-[11px] tracking-wide text-muted mb-6 block">
+            skills
           </span>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {skills.map((skill) => (

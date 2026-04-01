@@ -10,7 +10,7 @@ const sections = [
   {
     href: "/experience",
     label: "experience",
-    description: "what i've built and where i've been",
+    description: "where i've been, what i've done",
   },
   {
     href: "/musings",
@@ -29,12 +29,12 @@ export default function Home() {
             <h1 className="font-display text-[clamp(48px,7vw,80px)] font-light leading-[1.05] tracking-tight text-foreground mb-6">
               neil <CyclingVerb />
               <br />
-              cool shit
+              cool things
             </h1>
             <p className="font-sans text-[15px] md:text-[16px] text-muted leading-relaxed max-w-md">
               drawing, tattooing, and building experiences{" "}
               <br className="hidden md:block" />
-              people actually want to use
+              people want to use
             </p>
           </div>
         </section>

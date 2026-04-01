@@ -59,15 +59,23 @@ export default function WorkModal({
               <div className="overflow-y-auto overscroll-contain flex flex-col flex-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {/* Image */}
                 <div
-                  className="relative w-full aspect-[16/9] overflow-hidden shrink-0"
-                  style={{ backgroundColor: item.bg }}
+                  className="relative w-full max-h-[45vh] overflow-hidden shrink-0"
+                  style={{
+                    backgroundColor: item.bg,
+                    aspectRatio:
+                      item.aspect === "portrait"
+                        ? "3/4"
+                        : item.aspect === "square"
+                          ? "1/1"
+                          : "16/9",
+                  }}
                 >
                   {item.imageUrl && (
                     <Image
                       src={item.imageUrl}
                       alt={item.title}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       sizes="(max-width: 768px) 100vw, 672px"
                     />
                   )}
@@ -98,7 +106,7 @@ export default function WorkModal({
                         <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted">
                           Overview
                         </span>
-                        <p className="font-display text-[18px] font-light leading-[1.8] text-foreground">
+                        <p className="font-display text-[18px] font-light leading-[1.8] text-foreground whitespace-pre-wrap">
                           {item.details.overview}
                         </p>
                       </div>
@@ -106,9 +114,9 @@ export default function WorkModal({
                       {/* Role */}
                       <div className="flex flex-col gap-2 border-t border-warm-border pt-7">
                         <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted">
-                          My Role
+                          {item.category === "drawings" || item.category === "tattoos" ? "intent" : "my role"}
                         </span>
-                        <p className="font-display text-[18px] font-light leading-[1.8] text-foreground">
+                        <p className="font-display text-[18px] font-light leading-[1.8] text-foreground whitespace-pre-wrap">
                           {item.details.role}
                         </p>
                       </div>
@@ -119,12 +127,26 @@ export default function WorkModal({
                           <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted">
                             What I Learned
                           </span>
-                          <p className="font-display text-[18px] font-light leading-[1.8] text-foreground">
+                          <p className="font-display text-[18px] font-light leading-[1.8] text-foreground whitespace-pre-wrap">
                             {item.details.learnings}
                           </p>
                         </div>
                       )}
                     </>
+                  )}
+
+                  {/* External link */}
+                  {item.link && (
+                    <div className="border-t border-warm-border pt-7 pb-2">
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-sans text-[12px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
+                      >
+                        view on github →
+                      </a>
+                    </div>
                   )}
                 </div>
 

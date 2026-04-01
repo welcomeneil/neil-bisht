@@ -26,38 +26,46 @@ export default function Musings() {
 
         {/* Post list */}
         <section className="border-t border-warm-border md:pb-24">
-          {MUSINGS.map((post) => (
-            <Link
-              key={post.slug}
-              href={`/musings/${post.slug}`}
-              className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-10 py-8 border-b border-warm-border hover:border-foreground transition-colors duration-200"
-            >
-              {/* Left: date + category */}
-              <div className="flex sm:flex-col gap-3 sm:gap-1 sm:w-36 shrink-0">
-                <span className="font-sans text-[11px] tracking-wide text-muted group-hover:text-foreground transition-colors duration-200">
-                  {post.date}
-                </span>
-                <span className="font-sans text-[11px] tracking-wide text-muted group-hover:text-accent transition-colors duration-200">
-                  {categoryLabel[post.category]}
-                </span>
-              </div>
+          {MUSINGS.length === 0 ? (
+            <div className="py-8 border-b border-warm-border">
+              <p className="font-display text-[22px] md:text-[26px] font-light italic text-muted">
+                holding off until a deep meditation sesh for my first entry
+              </p>
+            </div>
+          ) : (
+            MUSINGS.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/musings/${post.slug}`}
+                className="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-10 py-8 border-b border-warm-border hover:border-foreground transition-colors duration-200"
+              >
+                {/* Left: date + category */}
+                <div className="flex sm:flex-col gap-3 sm:gap-1 sm:w-36 shrink-0">
+                  <span className="font-sans text-[11px] tracking-wide text-muted group-hover:text-foreground transition-colors duration-200">
+                    {post.date}
+                  </span>
+                  <span className="font-sans text-[11px] tracking-wide text-muted group-hover:text-accent transition-colors duration-200">
+                    {categoryLabel[post.category]}
+                  </span>
+                </div>
 
-              {/* Right: title + excerpt */}
-              <div className="flex-1">
-                <h2 className="font-display text-[22px] md:text-[26px] font-light text-foreground group-hover:text-accent transition-colors duration-200 leading-tight mb-2">
-                  {post.title}
-                </h2>
-                <p className="font-sans text-[14px] text-muted group-hover:text-foreground transition-colors duration-200 leading-relaxed line-clamp-2">
-                  {post.excerpt}
-                </p>
-              </div>
+                {/* Right: title + excerpt */}
+                <div className="flex-1">
+                  <h2 className="font-display text-[22px] md:text-[26px] font-light text-foreground group-hover:text-accent transition-colors duration-200 leading-tight mb-2">
+                    {post.title}
+                  </h2>
+                  <p className="font-sans text-[14px] text-muted group-hover:text-foreground transition-colors duration-200 leading-relaxed line-clamp-2">
+                    {post.excerpt}
+                  </p>
+                </div>
 
-              {/* Arrow */}
-              <span className="hidden sm:block text-muted group-hover:text-foreground group-hover:translate-x-1 transition-all duration-200">
-                →
-              </span>
-            </Link>
-          ))}
+                {/* Arrow */}
+                <span className="hidden sm:block text-muted group-hover:text-foreground group-hover:translate-x-1 transition-all duration-200">
+                  →
+                </span>
+              </Link>
+            ))
+          )}
         </section>
 
         {/* Mobile forward/back nav */}
