@@ -3,6 +3,7 @@ import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/nav";
 import PageTransition from "@/components/page-transition";
+import { Analytics } from "@vercel/analytics/next";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -39,6 +40,7 @@ export default function RootLayout({
         <PageTransition>
           {children}
         </PageTransition>
+        <Analytics />
       </body>
     </html>
   );
