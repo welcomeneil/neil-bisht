@@ -21,7 +21,7 @@ export interface WorkItem {
 
 export const WORK_ITEMS: WorkItem[] = [
   {
-    id: 18,
+    id: 1,
     title: "tattoos",
     category: "tattoos",
     aspect: "portrait",
@@ -33,7 +33,7 @@ export const WORK_ITEMS: WorkItem[] = [
     },
   },
   {
-    id: 19,
+    id: 2,
     title: "design",
     category: "design",
     aspect: "landscape",
@@ -46,7 +46,7 @@ export const WORK_ITEMS: WorkItem[] = [
     },
   },
   {
-    id: 2,
+    id: 3,
     title: "github",
     category: "software",
     aspect: "square",
@@ -60,7 +60,7 @@ export const WORK_ITEMS: WorkItem[] = [
     },
   },
   {
-    id: 13,
+    id: 4,
     title: "tonal study I (WIP)",
     category: "drawings",
     aspect: "landscape",
@@ -74,7 +74,7 @@ export const WORK_ITEMS: WorkItem[] = [
     },
   },
   {
-    id: 14,
+    id: 5,
     title: "tonal study II",
     category: "drawings",
     aspect: "portrait",
@@ -83,7 +83,7 @@ export const WORK_ITEMS: WorkItem[] = [
     imageUrl: "/work/tonal_1.jpeg",
   },
   {
-    id: 15,
+    id: 6,
     title: "gojo?",
     category: "drawings",
     aspect: "portrait",
@@ -92,7 +92,7 @@ export const WORK_ITEMS: WorkItem[] = [
     imageUrl: "/work/creature-sketch.jpeg",
   },
   {
-    id: 16,
+    id: 7,
     title: "shinji",
     category: "drawings",
     aspect: "portrait",
