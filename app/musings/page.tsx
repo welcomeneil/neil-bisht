@@ -29,7 +29,7 @@ export default function Musings() {
           {MUSINGS.length === 0 ? (
             <div className="py-8 border-b border-warm-border">
               <p className="font-display text-[22px] md:text-[26px] font-light italic text-muted">
-                holding off until a deep meditation sesh for my first entry
+                holding off until a deep meditation sesh to write my first entry
               </p>
             </div>
           ) : (
