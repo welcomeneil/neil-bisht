@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const verbs = ["makes", "builds", "creates"];
+const verbs = ["makes", "builds", "creates", "designs", "draws", "tattoos", "ships"];
 
 export default function CyclingVerb() {
   const [index, setIndex] = useState(0);
