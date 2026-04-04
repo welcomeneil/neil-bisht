@@ -9,5 +9,5 @@ export const SOCIAL_LINKS: SocialLink[] = [
   { label: "soundcloud", href: "https://soundcloud.com/cxnxry" },
   { label: "github", href: "https://github.com/welcomeneil/" },
   { label: "linkedin", href: "https://www.linkedin.com/in/neil-bisht/" },
-  { label: "old portfolio", href: "https://welcomeneil.github.io/" },
+  { label: "resume", href: "/neil-bisht-resume.pdf" },
 ];
