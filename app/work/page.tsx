@@ -125,13 +125,17 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
         }
       }
 
-      const viewportCenter = window.innerHeight / 2;
+      const viewportCenter = window.innerHeight * 0.35;
       let newFocusIdx = 0;
 
       for (let i = 0; i < ordered.length; i++) {
         if (ordered[i].threshold > viewportCenter) break;
         newFocusIdx = i;
       }
+
+      // If at the bottom of the page, focus the last tile
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 20;
+      if (atBottom) newFocusIdx = ordered.length - 1;
 
       const order = ordered.map((t) => t.id);
       setReadingOrder(order);
