@@ -21,31 +21,6 @@ export interface WorkItem {
 
 export const WORK_ITEMS: WorkItem[] = [
   {
-    id: 1,
-    title: "tattoos",
-    category: "tattoos",
-    aspect: "portrait",
-    bg: "#C4B89A",
-    year: "2026",
-    details: {
-      overview: "coming soon.\nrefer to my instagram (pocketchbook) for posted tattoo pieces.",
-      role: "flash and custom work.",
-    },
-  },
-  {
-    id: 2,
-    title: "design",
-    category: "design",
-    aspect: "landscape",
-    bg: "#9C8B78",
-    year: "2026",
-    wide: true,
-    details: {
-      overview: "coming soon.",
-      role: "WIP Portfolio.",
-    },
-  },
-  {
     id: 3,
     title: "github",
     category: "software",
@@ -99,5 +74,30 @@ export const WORK_ITEMS: WorkItem[] = [
     bg: "#9A8A76",
     year: "2024",
     imageUrl: "/work/headphones-figure.jpeg",
+  },
+  {
+    id: 1,
+    title: "tattoos",
+    category: "tattoos",
+    aspect: "portrait",
+    bg: "#C4B89A",
+    year: "2026",
+    details: {
+      overview: "coming soon.\nrefer to my instagram (pocketchbook) for posted tattoo pieces.",
+      role: "flash and custom work.",
+    },
+  },
+  {
+    id: 2,
+    title: "design",
+    category: "design",
+    aspect: "landscape",
+    bg: "#9C8B78",
+    year: "2026",
+    wide: true,
+    details: {
+      overview: "coming soon.",
+      role: "WIP Portfolio.",
+    },
   },
 ];

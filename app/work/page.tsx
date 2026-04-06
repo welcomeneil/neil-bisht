@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,16 +11,18 @@ type Filter = WorkCategory | "all";
 
 const filters: { value: Filter; label: string }[] = [
   { value: "all", label: "all" },
-  { value: "tattoos", label: "tattoos" },
-  { value: "drawings", label: "drawings" },
   { value: "software", label: "software" },
+  { value: "drawings", label: "drawings" },
+  { value: "tattoos", label: "tattoos" },
   { value: "design", label: "design" },
 ];
 
 function WorkCard({
   item,
+  isFocused,
 }: {
   item: (typeof WORK_ITEMS)[number];
+  isFocused: boolean;
 }) {
   const aspectClass =
     item.aspect === "portrait"
@@ -44,11 +46,128 @@ function WorkCard({
           alt={item.title}
           fill
           sizes="(max-width: 768px) 50vw, 33vw"
-          className="object-cover opacity-0 group-hover:opacity-90 transition-opacity duration-500 ease-in-out mix-blend-multiply"
+          className={`object-cover opacity-0 group-hover:opacity-90 transition-opacity duration-500 ease-in-out mix-blend-multiply ${
+            isFocused ? "max-md:opacity-90" : ""
+          }`}
         />
       )}
+
     </div>
   );
+}
+
+function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivElement | null>) {
+  const tileRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [readingOrder, setReadingOrder] = useState<number[]>([]);
+
+  const setTileRef = useCallback(
+    (id: number, el: HTMLDivElement | null) => {
+      if (el) tileRefs.current.set(id, el);
+      else tileRefs.current.delete(id);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+
+    const update = () => {
+      // Desktop — no opacity changes
+      if (!mq.matches) {
+        setFocusedIndex(null);
+        setReadingOrder([]);
+        return;
+      }
+
+      // Mobile — only activate once user starts scrolling
+      if (window.scrollY < 8) {
+        setFocusedIndex(null);
+        setReadingOrder([]);
+        return;
+      }
+
+      // Sort tiles in reading order (top to bottom, left to right)
+      const tiles: { id: number; rect: DOMRect }[] = [];
+      tileRefs.current.forEach((el, id) => {
+        tiles.push({ id, rect: el.getBoundingClientRect() });
+      });
+      tiles.sort((a, b) => {
+        const rowDiff = Math.round(a.rect.top) - Math.round(b.rect.top);
+        if (Math.abs(rowDiff) > 10) return rowDiff;
+        return a.rect.left - b.rect.left;
+      });
+
+      if (tiles.length === 0) return;
+
+      // Group into rows, assign unique thresholds
+      const ROW_TOLERANCE = 10;
+      const rows: { id: number; rect: DOMRect }[][] = [];
+      for (const tile of tiles) {
+        const lastRow = rows[rows.length - 1];
+        if (lastRow && Math.abs(lastRow[0].rect.top - tile.rect.top) < ROW_TOLERANCE) {
+          lastRow.push(tile);
+        } else {
+          rows.push([tile]);
+        }
+      }
+
+      const ordered: { id: number; threshold: number }[] = [];
+      for (const row of rows) {
+        const rowTop = row[0].rect.top;
+        const rowHeight = row[0].rect.height;
+        for (let col = 0; col < row.length; col++) {
+          ordered.push({
+            id: row[col].id,
+            threshold: rowTop + (col / row.length) * rowHeight,
+          });
+        }
+      }
+
+      const viewportCenter = window.innerHeight / 2;
+      let newFocusIdx = 0;
+
+      for (let i = 0; i < ordered.length; i++) {
+        if (ordered[i].threshold > viewportCenter) break;
+        newFocusIdx = i;
+      }
+
+      const order = ordered.map((t) => t.id);
+      setReadingOrder(order);
+
+      setFocusedIndex(newFocusIdx);
+    };
+
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  // Calculate opacity for each tile based on distance from focused tile
+  const getOpacity = useCallback(
+    (itemId: number) => {
+      if (focusedIndex === null || readingOrder.length === 0) return 1;
+      const idx = readingOrder.indexOf(itemId);
+      if (idx === -1) return 1;
+      const dist = Math.abs(idx - focusedIndex);
+      return dist === 0 ? 1 : 0.4;
+    },
+    [focusedIndex, readingOrder],
+  );
+
+  const isFocused = useCallback(
+    (itemId: number) => {
+      if (focusedIndex === null || readingOrder.length === 0) return false;
+      return readingOrder.indexOf(itemId) === focusedIndex;
+    },
+    [focusedIndex, readingOrder],
+  );
+
+  return { getOpacity, isFocused, setTileRef };
 }
 
 export default function Work() {
@@ -59,6 +178,9 @@ export default function Work() {
     active === "all"
       ? WORK_ITEMS
       : WORK_ITEMS.filter((item) => item.category === active);
+
+  const gridRef = useRef<HTMLDivElement>(null);
+  const { getOpacity, isFocused, setTileRef } = useScrollFocus(filtered, gridRef);
 
   return (
     <main className="min-h-screen pt-0 md:pt-16">
@@ -94,15 +216,19 @@ export default function Work() {
 
         {/* Grid */}
         <motion.div
+          ref={gridRef}
           layout
           className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 md:pb-24"
         >
           {filtered.map((item, i) => (
             <motion.div
               key={item.id}
+              ref={(el) => setTileRef(item.id, el)}
               layout
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{
+                opacity: getOpacity(item.id),
+              }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, delay: i * 0.04 }}
               className={`group cursor-pointer ${
@@ -113,7 +239,7 @@ export default function Work() {
               onClick={() => setSelectedItem(item)}
             >
               <div className="overflow-hidden">
-                <WorkCard item={item} />
+                <WorkCard item={item} isFocused={isFocused(item.id)} />
               </div>
               <div className="mt-2.5 flex items-start justify-between gap-3">
                 <div>

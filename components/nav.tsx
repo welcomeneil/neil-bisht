@@ -149,7 +149,7 @@ export default function Nav() {
       {/* Mobile nav — fixed top bar, scroll-aware */}
       <div
         className={`md:hidden fixed top-0 left-0 right-0 z-50 pointer-events-none border-b ${
-          skipTransition ? "" : "transition-all duration-500"
+          skipTransition ? "" : "transition-all duration-200"
         } ${
           scrolled
             ? "border-warm-border bg-background/90 backdrop-blur-sm"
@@ -160,7 +160,7 @@ export default function Nav() {
           <Link
             href="/"
             className={`font-display text-[17px] italic tracking-wide text-foreground hover:text-accent pointer-events-auto ${
-              skipTransition ? "" : "transition-all duration-500"
+              skipTransition ? "" : "transition-all duration-200"
             } ${
               scrolled ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
