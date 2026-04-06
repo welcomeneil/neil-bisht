@@ -46,7 +46,7 @@ function WorkCard({
           alt={item.title}
           fill
           sizes="(max-width: 768px) 50vw, 33vw"
-          className={`object-cover opacity-0 group-hover:opacity-90 transition-opacity duration-500 ease-in-out mix-blend-multiply ${
+          className={`object-cover opacity-0 group-hover:opacity-90 transition-opacity duration-500 max-md:duration-1000 ease-in-out mix-blend-multiply ${
             isFocused ? "max-md:opacity-90" : ""
           }`}
         />
