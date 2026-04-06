@@ -56,11 +56,10 @@ function WorkCard({
   );
 }
 
-function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivElement | null>) {
+function useScrollFocus(filtered: WorkItem[]) {
   const tileRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const [readingOrder, setReadingOrder] = useState<number[]>([]);
-  const delayTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setTileRef = useCallback(
     (id: number, el: HTMLDivElement | null) => {
@@ -74,14 +73,12 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
     const mq = window.matchMedia("(max-width: 767px)");
 
     const update = () => {
-      // Desktop — no opacity changes
       if (!mq.matches) {
         setFocusedIndex(null);
         setReadingOrder([]);
         return;
       }
 
-      // Mobile — only activate once user starts scrolling
       if (window.scrollY < 8) {
         setFocusedIndex(null);
         setReadingOrder([]);
@@ -101,50 +98,18 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
 
       if (tiles.length === 0) return;
 
-      // Group into rows, assign unique thresholds
-      const ROW_TOLERANCE = 10;
-      const rows: { id: number; rect: DOMRect }[][] = [];
-      for (const tile of tiles) {
-        const lastRow = rows[rows.length - 1];
-        if (lastRow && Math.abs(lastRow[0].rect.top - tile.rect.top) < ROW_TOLERANCE) {
-          lastRow.push(tile);
-        } else {
-          rows.push([tile]);
-        }
-      }
-
-      const ordered: { id: number; threshold: number }[] = [];
-      for (const row of rows) {
-        const rowTop = row[0].rect.top;
-        const rowHeight = row[0].rect.height;
-        for (let col = 0; col < row.length; col++) {
-          ordered.push({
-            id: row[col].id,
-            threshold: rowTop + (col / row.length) * (rowHeight + rowHeight * 0.5),
-          });
-        }
-      }
-
-      // Focus line sits at 35% of viewport, but shifts down toward 65%
-      // as you approach the bottom of the page so every tile gets its turn
-      const scrollBottom = window.innerHeight + window.scrollY;
-      const docHeight = document.documentElement.scrollHeight;
-      const distFromBottom = docHeight - scrollBottom;
-      const bottomZone = window.innerHeight * 0.8;
-      const bottomProgress = Math.max(0, 1 - distFromBottom / bottomZone);
-      const focusLine = window.innerHeight * (0.35 + bottomProgress * 0.3);
-
-      let newFocusIdx = 0;
-
-      for (let i = 0; i < ordered.length; i++) {
-        if (ordered[i].threshold > focusLine) break;
-        newFocusIdx = i;
-      }
-
-      const order = ordered.map((t) => t.id);
+      const order = tiles.map((t) => t.id);
       setReadingOrder(order);
 
-      setFocusedIndex(newFocusIdx);
+      // Each tile gets an equal slice of the total scrollable range
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = Math.min(window.scrollY / maxScroll, 1);
+      const idx = Math.min(
+        Math.floor(progress * order.length),
+        order.length - 1,
+      );
+
+      setFocusedIndex(idx);
     };
 
     window.addEventListener("scroll", update, { passive: true });
@@ -153,18 +118,15 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
     return () => {
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
-      if (delayTimer.current) clearTimeout(delayTimer.current);
     };
   }, []);
 
-  // Calculate opacity for each tile based on distance from focused tile
   const getOpacity = useCallback(
     (itemId: number) => {
       if (focusedIndex === null || readingOrder.length === 0) return 1;
       const idx = readingOrder.indexOf(itemId);
       if (idx === -1) return 1;
-      const dist = Math.abs(idx - focusedIndex);
-      return dist === 0 ? 1 : 0.4;
+      return idx === focusedIndex ? 1 : 0.4;
     },
     [focusedIndex, readingOrder],
   );
@@ -195,8 +157,7 @@ export default function Work() {
       ? WORK_ITEMS
       : WORK_ITEMS.filter((item) => item.category === active);
 
-  const gridRef = useRef<HTMLDivElement>(null);
-  const { getOpacity, isFocused, setTileRef } = useScrollFocus(filtered, gridRef);
+  const { getOpacity, isFocused, setTileRef } = useScrollFocus(filtered);
 
   return (
     <main className="min-h-screen pt-0 md:pt-16">
@@ -232,7 +193,6 @@ export default function Work() {
 
         {/* Grid */}
         <motion.div
-          ref={gridRef}
           layout
           className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 md:pb-24"
         >
