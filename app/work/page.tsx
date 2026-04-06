@@ -242,7 +242,7 @@ export default function Work() {
                 opacity: getOpacity(item.id),
               }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, delay: mounted ? 0 : i * 0.04 }}
+              transition={{ duration: mounted ? 0.55 : 0.3, delay: mounted ? 0 : i * 0.04 }}
               className={`group cursor-pointer ${
                 item.wide && filtered.length > 3
                   ? "col-span-2"
