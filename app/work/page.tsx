@@ -120,7 +120,7 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
         for (let col = 0; col < row.length; col++) {
           ordered.push({
             id: row[col].id,
-            threshold: rowTop + (col / row.length) * rowHeight,
+            threshold: rowTop + (col / row.length) * (rowHeight + rowHeight * 0.5),
           });
         }
       }
