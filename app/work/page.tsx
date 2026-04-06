@@ -136,10 +136,7 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
       const order = ordered.map((t) => t.id);
       setReadingOrder(order);
 
-      if (delayTimer.current) clearTimeout(delayTimer.current);
-      delayTimer.current = setTimeout(() => {
-        setFocusedIndex(newFocusIdx);
-      }, 80);
+      setFocusedIndex(newFocusIdx);
     };
 
     window.addEventListener("scroll", update, { passive: true });
