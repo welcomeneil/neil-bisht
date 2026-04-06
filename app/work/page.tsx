@@ -60,6 +60,7 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
   const tileRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const [readingOrder, setReadingOrder] = useState<number[]>([]);
+  const delayTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setTileRef = useCallback(
     (id: number, el: HTMLDivElement | null) => {
@@ -135,7 +136,10 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
       const order = ordered.map((t) => t.id);
       setReadingOrder(order);
 
-      setFocusedIndex(newFocusIdx);
+      if (delayTimer.current) clearTimeout(delayTimer.current);
+      delayTimer.current = setTimeout(() => {
+        setFocusedIndex(newFocusIdx);
+      }, 100);
     };
 
     window.addEventListener("scroll", update, { passive: true });
@@ -144,6 +148,7 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
     return () => {
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
+      if (delayTimer.current) clearTimeout(delayTimer.current);
     };
   }, []);
 
