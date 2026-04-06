@@ -125,17 +125,21 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
         }
       }
 
-      const viewportCenter = window.innerHeight * 0.35;
+      // Focus line sits at 35% of viewport, but shifts down toward 65%
+      // as you approach the bottom of the page so every tile gets its turn
+      const scrollBottom = window.innerHeight + window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const distFromBottom = docHeight - scrollBottom;
+      const bottomZone = window.innerHeight * 0.8;
+      const bottomProgress = Math.max(0, 1 - distFromBottom / bottomZone);
+      const focusLine = window.innerHeight * (0.35 + bottomProgress * 0.3);
+
       let newFocusIdx = 0;
 
       for (let i = 0; i < ordered.length; i++) {
-        if (ordered[i].threshold > viewportCenter) break;
+        if (ordered[i].threshold > focusLine) break;
         newFocusIdx = i;
       }
-
-      // If at the bottom of the page, focus the last tile
-      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 20;
-      if (atBottom) newFocusIdx = ordered.length - 1;
 
       const order = ordered.map((t) => t.id);
       setReadingOrder(order);
