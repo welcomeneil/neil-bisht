@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,7 +46,7 @@ function WorkCard({
           alt={item.title}
           fill
           sizes="(max-width: 768px) 50vw, 33vw"
-          className={`object-cover opacity-0 group-hover:opacity-90 transition-opacity duration-500 max-md:duration-500 ease-in-out mix-blend-multiply ${
+          className={`object-cover opacity-0 group-hover:opacity-90 transition-opacity duration-500 ease-in-out mix-blend-multiply ${
             isFocused ? "max-md:opacity-90" : ""
           }`}
         />
@@ -56,60 +56,21 @@ function WorkCard({
   );
 }
 
-function useScrollFocus(filtered: WorkItem[]) {
-  const tileRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+function useScrollFocus(tileCount: number) {
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
-  const [readingOrder, setReadingOrder] = useState<number[]>([]);
-
-  const setTileRef = useCallback(
-    (id: number, el: HTMLDivElement | null) => {
-      if (el) tileRefs.current.set(id, el);
-      else tileRefs.current.delete(id);
-    },
-    [],
-  );
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
 
     const update = () => {
-      if (!mq.matches) {
+      if (!mq.matches || window.scrollY < 8 || tileCount === 0) {
         setFocusedIndex(null);
-        setReadingOrder([]);
         return;
       }
 
-      if (window.scrollY < 8) {
-        setFocusedIndex(null);
-        setReadingOrder([]);
-        return;
-      }
-
-      // Sort tiles in reading order (top to bottom, left to right)
-      const tiles: { id: number; rect: DOMRect }[] = [];
-      tileRefs.current.forEach((el, id) => {
-        tiles.push({ id, rect: el.getBoundingClientRect() });
-      });
-      tiles.sort((a, b) => {
-        const rowDiff = Math.round(a.rect.top) - Math.round(b.rect.top);
-        if (Math.abs(rowDiff) > 10) return rowDiff;
-        return a.rect.left - b.rect.left;
-      });
-
-      if (tiles.length === 0) return;
-
-      const order = tiles.map((t) => t.id);
-      setReadingOrder(order);
-
-      // Each tile gets an equal slice of the total scrollable range
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const progress = Math.min(window.scrollY / maxScroll, 1);
-      const idx = Math.min(
-        Math.floor(progress * order.length),
-        order.length - 1,
-      );
-
-      setFocusedIndex(idx);
+      setFocusedIndex(Math.min(Math.floor(progress * tileCount), tileCount - 1));
     };
 
     window.addEventListener("scroll", update, { passive: true });
@@ -119,27 +80,17 @@ function useScrollFocus(filtered: WorkItem[]) {
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
     };
-  }, []);
+  }, [tileCount]);
 
   const getOpacity = useCallback(
-    (itemId: number) => {
-      if (focusedIndex === null || readingOrder.length === 0) return 1;
-      const idx = readingOrder.indexOf(itemId);
-      if (idx === -1) return 1;
-      return idx === focusedIndex ? 1 : 0.4;
+    (index: number) => {
+      if (focusedIndex === null) return 1;
+      return index === focusedIndex ? 1 : 0.4;
     },
-    [focusedIndex, readingOrder],
+    [focusedIndex],
   );
 
-  const isFocused = useCallback(
-    (itemId: number) => {
-      if (focusedIndex === null || readingOrder.length === 0) return false;
-      return readingOrder.indexOf(itemId) === focusedIndex;
-    },
-    [focusedIndex, readingOrder],
-  );
-
-  return { getOpacity, isFocused, setTileRef };
+  return { focusedIndex, getOpacity };
 }
 
 export default function Work() {
@@ -157,7 +108,8 @@ export default function Work() {
       ? WORK_ITEMS
       : WORK_ITEMS.filter((item) => item.category === active);
 
-  const { getOpacity, isFocused, setTileRef } = useScrollFocus(filtered);
+  const tileCount = filtered.length;
+  const { focusedIndex, getOpacity } = useScrollFocus(tileCount);
 
   return (
     <main className="min-h-screen pt-0 md:pt-16">
@@ -199,14 +151,12 @@ export default function Work() {
           {filtered.map((item, i) => (
             <motion.div
               key={item.id}
-              ref={(el) => setTileRef(item.id, el)}
               layout
               initial={{ opacity: 0 }}
               animate={{
-                opacity: getOpacity(item.id),
+                opacity: getOpacity(i),
               }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: mounted ? 0.55 : 0.3, delay: mounted ? 0 : i * 0.04 }}
+              transition={{ duration: mounted ? (getOpacity(i) === 1 ? 0.35 : 0.7) : 0.3, delay: mounted ? 0 : i * 0.04 }}
               className={`group cursor-pointer ${
                 item.wide && filtered.length > 3
                   ? "col-span-2"
@@ -215,7 +165,7 @@ export default function Work() {
               onClick={() => setSelectedItem(item)}
             >
               <div className="overflow-hidden">
-                <WorkCard item={item} isFocused={isFocused(item.id)} />
+                <WorkCard item={item} isFocused={focusedIndex === i} />
               </div>
               <div className="mt-2.5 flex items-start justify-between gap-3">
                 <div>
