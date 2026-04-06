@@ -175,6 +175,12 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
 export default function Work() {
   const [active, setActive] = useState<Filter>("all");
   const [selectedItem, setSelectedItem] = useState<WorkItem | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 400);
+    return () => clearTimeout(timer);
+  }, []);
 
   const filtered =
     active === "all"
@@ -232,7 +238,7 @@ export default function Work() {
                 opacity: getOpacity(item.id),
               }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, delay: i * 0.04 }}
+              transition={{ duration: 0.3, delay: mounted ? 0 : i * 0.04 }}
               className={`group cursor-pointer ${
                 item.wide && filtered.length > 3
                   ? "col-span-2"
