@@ -1,3 +1,3 @@
-intentional portfolio built on restraint -- attention is guided, not grabbed. 
+intentional portfolio built on restraint -- attention is guided, not grabbed
 
-typography-first.
+typography-first
