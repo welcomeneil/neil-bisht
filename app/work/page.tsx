@@ -133,9 +133,19 @@ function useScrollFocus(filtered: WorkItem[], gridRef: React.RefObject<HTMLDivEl
         newFocusIdx = i;
       }
 
-      // If at the bottom of the page, focus the last tile
-      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 20;
-      if (atBottom) newFocusIdx = ordered.length - 1;
+      // At the bottom of the page, step through remaining tiles based on
+      // how close to the very bottom the user has scrolled
+      const scrollBottom = window.innerHeight + window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const remaining = docHeight - scrollBottom;
+      if (remaining < 200) {
+        // Distribute remaining tiles across the last 200px of scroll
+        const tilesLeft = ordered.length - 1 - newFocusIdx;
+        if (tilesLeft > 0) {
+          const progress = 1 - remaining / 200;
+          newFocusIdx = newFocusIdx + Math.round(progress * tilesLeft);
+        }
+      }
 
       const order = ordered.map((t) => t.id);
       setReadingOrder(order);
