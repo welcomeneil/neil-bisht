@@ -34,7 +34,7 @@ export default function Home() {
             <p className="font-sans text-[15px] md:text-[16px] text-muted leading-relaxed max-w-md">
               drawing, tattooing, and building experiences{" "}
               <br className="hidden md:block" />
-              people want to use
+              that people want to use
             </p>
           </div>
         </section>
