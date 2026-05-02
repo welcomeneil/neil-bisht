@@ -42,3 +42,6 @@ next-env.d.ts
 
 # lastsocial case study
 content/lastsocial-case-study.md
+
+# image originals (uncompressed backups)
+.image-originals/

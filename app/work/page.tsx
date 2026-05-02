@@ -146,7 +146,7 @@ export default function Work() {
         {/* Grid */}
         <motion.div
           layout
-          className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 md:pb-24"
+          className="grid grid-cols-2 md:grid-cols-3 grid-flow-row-dense gap-4 md:gap-5 md:pb-24"
         >
           {filtered.map((item, i) => (
             <motion.div

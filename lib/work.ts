@@ -21,6 +21,19 @@ export interface WorkItem {
 
 export const WORK_ITEMS: WorkItem[] = [
   {
+    id: 8,
+    title: "tone zone",
+    category: "software",
+    aspect: "square",
+    bg: "#A89880",
+    year: "2026",
+    link: "https://github.com/welcomeneil/tones",
+    details: {
+      overview: "an image analysis & value-reference tool that extracts 'n'-values from a reference image, renders a palette, and maps them across the original image.",
+      role: "a project for artists first; not an algorithm demo.\n\nvalue palette constrained to drawing conventions (3, 5, 7, 9 — up to 15) instead of chasing a pixel-perfect granularity no artist actually uses.\n\ntested histogram, k-means, and otsu segmentation — eye-test wins over quantitative metrics since this is a visual aid for artists.\n\nnext.js frontend | fastapi backend on fly | deployed via vercel",
+    },
+  },
+  {
     id: 3,
     title: "github",
     category: "software",
@@ -30,7 +43,7 @@ export const WORK_ITEMS: WorkItem[] = [
     imageUrl: "https://github.com/welcomeneil.png",
     link: "https://github.com/welcomeneil",
     details: {
-      overview: "building - see what i'm doing here.",
+      overview: "building - see what i'm doing here",
       role: "personal projects and more",
     },
   },
@@ -82,6 +95,7 @@ export const WORK_ITEMS: WorkItem[] = [
     aspect: "portrait",
     bg: "#C4B89A",
     year: "2026",
+    link: "https://www.instagram.com/pocketchbook/",
     details: {
       overview: "coming soon.\nrefer to my instagram (pocketchbook) for posted tattoo pieces.",
       role: "flash and custom work.",

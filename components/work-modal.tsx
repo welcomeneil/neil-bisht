@@ -114,7 +114,7 @@ export default function WorkModal({
                       {/* Role */}
                       <div className="flex flex-col gap-2 border-t border-warm-border pt-7">
                         <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted">
-                          {item.category === "drawings" || item.category === "tattoos" ? "intent" : "my role"}
+                          {item.category === "drawings" || item.category === "tattoos" ? "intent" : "approach"}
                         </span>
                         <p className="font-display text-[18px] font-light leading-[1.8] text-foreground whitespace-pre-wrap">
                           {item.details.role}
@@ -144,7 +144,9 @@ export default function WorkModal({
                         rel="noopener noreferrer"
                         className="font-sans text-[12px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
                       >
-                        view on github →
+                        {item.link.includes("instagram.com")
+                          ? "view on instagram →"
+                          : "view on github →"}
                       </a>
                     </div>
                   )}
