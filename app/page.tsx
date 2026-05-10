@@ -32,9 +32,8 @@ export default function Home() {
               cool things
             </h1>
             <p className="font-sans text-[15px] md:text-[16px] text-muted leading-relaxed max-w-md">
-              drawing, tattooing, and building experiences{" "}
+            building | drawing | tattooing {" "}
               <br className="hidden md:block" />
-              that people want to use
             </p>
           </div>
         </section>

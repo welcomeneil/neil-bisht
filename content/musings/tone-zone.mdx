@@ -1,0 +1,137 @@
+i've been relying on linework less and less when it comes to drawing.
+
+instead, i've been building form with shading and contrast, focusing on the different values in a reference.
+
+the process: desaturate the reference in your head, anchor the darkest darks and lightest lights, then build a personal library of midtones in between.
+
+it gets tiresome. every time i look back at the reference, i have to re-orient.
+
+where was i, what shade is this region, how does it relate to that one -- the cognitive load gets in the way of actually drawing.
+
+## what tonal drawing actually is
+
+the difference between tones (values) is what builds form. and the number of zones isn't fixed — some images have three natural breaks, some have eight.
+
+the subjectivity lives in the midtones! how granular do you wanna go? which shades do you let bleed together, which subtle differences do you preserve?
+
+that's where artistic identity often comes from! discrepancies in the midtones, whether intentional, or happy accidents, lead to stylistic 
+
+so the tool can be objective. the artist interprets afterward. partnership, not replacement.
+
+## the key idea: sigma is gaze distance
+
+stand close to a reference. you see every grain, every subtle shift. back away — those details blur. the granular tonal differences average into their neighbors and collapse into broader zones. from far enough away, you only see the foundational contrasts.
+
+the smoothing parameter in the algorithm — sigma — is a mathematical model of that perceptual process.
+
+low sigma is close up, hyper-focused, many granular zones. high sigma is backed away, softened gaze, fewer broad zones.
+
+the slider isn't a granularity control. it's a *gaze distance* parameter. the math is literally simulating how the visual system collapses detail when attention widens.
+
+this is the conceptual heart of the project, and it took me a while to see it that way. once i did, every other decision got easier.
+
+## why a histogram, not a neural network
+
+the algorithm discovers structure that already exists in the data — the image determines its own zones.
+
+deep learning would be overkill. it would also give probabilistic output ("probably zone 3 with 87% confidence"). i wanted deterministic — luminosity 142 is in zone 3, full stop. no probability needed for this kind of problem.
+
+k-means doesn't work either. it requires specifying the number of clusters upfront, but the whole point is that the image determines that. and k-means assumes roughly even distribution across clusters. luminosity histograms are never evenly distributed.
+
+so: a histogram. an image has millions of pixels but only 256 possible luminosity values. compress millions of data points into 256 bins. nothing tonal is lost. then smooth the curve and find the valleys — the points where pixel density drops between clusters of values. those are the natural seams between zones.
+
+spatial position is discarded entirely. the shadow under a chin and the shadow in the corner of the room are the same tone, even though they're on opposite sides of the image. region-based segmentation would treat them as separate. the histogram treats them as the same — which is correct for an artist analyzing value.
+
+## the pipeline, briefly
+
+1. convert to grayscale using perceptual weights — human eyes are more sensitive to green than blue, so a flat rgb average gives perceptually wrong luminosity
+2. flatten the 2d pixel grid into a 1d array — spatial position no longer matters
+3. build a histogram across 256 bins
+4. apply gaussian smoothing
+5. find local minimums in the smoothed curve — those are the zone boundaries
+6. assign every pixel a zone based on where it falls between boundaries
+7. compute the mean luminosity of each zone — that's the palette
+
+gaussian smoothing matters more than it sounds. a raw histogram is jagged. naive valley detection on a raw histogram finds hundreds of false boundaries — every noise spike registers as a zone break. smoothing replaces each point with a weighted average of its neighbors. isolated noise gets dragged toward its surroundings and disappears. real valleys survive because their surrounding values are also low.
+
+sigma controls the width of that bell. wider bell = more aggressive smoothing = fewer zones. that's the slider. that's the gaze distance.
+
+## the pivot: pragmatism over capability
+
+at first the slider went past 40 tones. you could push it. it was a great demonstration of the algorithm.
+
+it was useless.
+
+an artist's palette is 3, 5, 7, 9. sometimes up to 15 if you're going deep. nobody is drawing from a 40-tone palette. that's a hyperrealist mapping out a grid on paper, not an artist interpreting a reference.
+
+so i pulled it back. and the pivot prompted a real question: if the palette is constrained to a small fixed set, why use the histogram at all? k-means works on a fixed cluster count. otsu's method works too. maybe one of them produces better visual results when the artist's natural ceiling is the constraint.
+
+so let me try them all, and evaluate visually.
+
+there is no loss function for this. no accuracy metric. the evaluation is the eye. the right question is: does the segmentation match how *i* would have segmented it? do the boundaries fall where i would have drawn them?
+
+the absence of mathematical ground truth doesn't make the evaluation less valid. it makes it honest about what the tool is for.
+
+## what the absence of a loss function means
+
+most ml problems have a target. you measure how close you got. here there isn't one. perception is the benchmark.
+
+this is a real distinction, not a hand-wave. supervised learning bakes someone's labeling into a model — the model learns to replicate that someone. unsupervised discovers structure without anyone declaring what's right. the structure is already in the data.
+
+that's a philosophical choice as much as a technical one. who defines ground truth? for tonal segmentation, the only honest answer is the artist looking at the result. and so the tool doesn't pretend otherwise.
+
+perfection is the floor. the tool either renders zones the way the eye does or it doesn't. eye-test trumps math when the whole point of the tool is visual aid.
+
+## the underlying realization
+
+math and drawing are doing the same thing. both are representations of human experience. math through values and the manipulation of values. drawing through visual information. both are attempts to capture how we experience the world.
+
+this project mathematically represents perception — how we interpret form through tonal value. the algorithm isn't describing the image. it's describing how we *see* the image.
+
+distance organically determines gaze. gaze determines focus. focus determines what tonal information is meaningful. a pixel slightly different from its neighbor is irrelevant when the gaze is wide. it's only meaningful when the gaze is close. the algorithm respects this. the slider makes it controllable.
+
+drawing is execution. the important part is learning to perceive. building this deepened my understanding of why the perception process exists in the first place, and what it's actually doing.
+
+## the rewrite — deleting the service in the critical path
+
+posterization was SLOWWWWWW; the biggest bottleneck to an enjoyable experience was the speed. every action had a noticeable lag, so i traced where the time was actually going.
+
+the math was sub-millisecond. the entire round-trip was the cost. browser → vercel proxy → fly machine → fastapi → pipeline → png re-encode → base64 → json → back through every hop. on a warm machine that floor is around 600ms. on a cold fly machine — `auto_stop_machines = "stop"`, free idle, no minimum running — it's 2 to 10 seconds on the first action.
+
+the algorithm itself was overkill for a server in the first place. k-means on a 256-bin histogram doesn't need a server. it needs a few hundred lines of typescript and a web worker.
+
+so i deleted the backend.
+
+i ported the algorithms — k-means, otsu, gaussian smoothing, valley detection — to typescript. a worker owns the image and the histogram for the lifetime of the page. param changes hit a cached histogram and re-run the math in microseconds. the zone map paints directly to an `OffscreenCanvas` and transfers zero-copy back to the main thread as an `ImageBitmap`. no png encode, no base64, no json. the cold start went from 2–10 seconds to zero — because there's no machine to start.
+
+and here's the lesson i'd been missing while building it the original way: any operation that's a function of the value distribution, not the spatial layout, can be made image-size-independent. once you recognize the shape, the pipeline becomes decode once, histogram once, re-run cheap math indefinitely. histogram-shaped problems don't need servers. color quantization, levels, posterization, exposure analysis — all the same shape.
+
+a backend isn't free even when idle. cold-start risk. observability surface. deployment pipeline. dependency upgrades. env vars. proxy routes. for a tool whose math fits in 256 bins, all of that infrastructure was sitting in the critical path of every interaction, slowing things down for nothing.
+
+sometimes the highest-leverage performance work isn't optimizing the service. it's deleting it.
+
+## what's next
+
+a couple of extensions i'm circling:
+
+- perceptual weighting — weight zones by their importance to visual perception, not just by pixel count. a small zone might be more perceptually significant than a large one. this is where learned ml behavior starts to make sense, but it requires modeling what "perceptual importance" actually means.
+- personal taste training — let the model learn from how a *specific* artist sees. labeled data from the artist's own zone mappings, training a model to replicate their particular eye. supervised learning, a loss function, a feedback loop. the artist becomes the ground truth.
+
+both are real extensions. neither is the foundation. the foundation is the unsupervised, deterministic, eye-tested base.
+
+## what i learned
+
+classical signal processing is often the right tool. not everything needs a neural network.
+
+the math in this project isn't describing the image. it's describing how we see the image.
+
+sigma relates to gaze distance. the slider is a perception simulator.
+
+learning to analyze tones makes you a better artist; you understand how your perception works. you start to see why form exists, not just that it does.
+
+you don't need to build for hype. build out of interest, creativity, and what you yearn to learn — and then realize that all of them are the same thing.
+
+---
+
+stack: next.js, typescript, web workers, deployed via vercel. no backend.
+repo: [github.com/welcomeneil/tones](https://github.com/welcomeneil/tones)

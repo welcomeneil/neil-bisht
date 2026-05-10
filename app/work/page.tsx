@@ -36,7 +36,7 @@ function WorkCard({
       {/* Color block — always visible base */}
       <div
         className="absolute inset-0 transition-opacity duration-500"
-        style={{ backgroundColor: item.bg }}
+        style={{ background: item.bg }}
       />
 
       {/* Image — revealed on hover */}
@@ -49,6 +49,16 @@ function WorkCard({
           className={`object-cover opacity-0 group-hover:opacity-90 transition-opacity duration-500 ease-in-out mix-blend-multiply ${
             isFocused ? "max-md:opacity-90" : ""
           }`}
+        />
+      )}
+
+      {/* Gradient reveal — same hover pattern as imageUrl */}
+      {item.revealGradient && (
+        <div
+          className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out ${
+            isFocused ? "max-md:opacity-100" : ""
+          }`}
+          style={{ background: item.revealGradient }}
         />
       )}
 

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import type { WorkItem } from "@/lib/work";
+import TechStack from "@/components/tech-stack";
 
 export default function WorkModal({
   item,
@@ -61,7 +62,7 @@ export default function WorkModal({
                 <div
                   className="relative w-full max-h-[45vh] overflow-hidden shrink-0"
                   style={{
-                    backgroundColor: item.bg,
+                    background: item.revealGradient ?? item.bg,
                     aspectRatio:
                       item.aspect === "portrait"
                         ? "3/4"
@@ -119,6 +120,11 @@ export default function WorkModal({
                         <p className="font-display text-[18px] font-light leading-[1.8] text-foreground whitespace-pre-wrap">
                           {item.details.role}
                         </p>
+                        {item.stack && item.stack.length > 0 && (
+                          <div className="mt-4">
+                            <TechStack items={item.stack} />
+                          </div>
+                        )}
                       </div>
 
                       {/* Learnings */}
@@ -135,19 +141,33 @@ export default function WorkModal({
                     </>
                   )}
 
-                  {/* External link */}
-                  {item.link && (
-                    <div className="border-t border-warm-border pt-7 pb-2">
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-sans text-[12px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
-                      >
-                        {item.link.includes("instagram.com")
-                          ? "view on instagram →"
-                          : "view on github →"}
-                      </a>
+                  {/* External links */}
+                  {(item.link || item.repo) && (
+                    <div className="border-t border-warm-border pt-7 pb-2 flex flex-col gap-3">
+                      {item.link && (
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-sans text-[12px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
+                        >
+                          {item.link.includes("instagram.com")
+                            ? "view on instagram →"
+                            : item.link.includes("github.com")
+                              ? "view on github →"
+                              : "visit live site →"}
+                        </a>
+                      )}
+                      {item.repo && (
+                        <a
+                          href={item.repo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-sans text-[12px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
+                        >
+                          view source on github →
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>

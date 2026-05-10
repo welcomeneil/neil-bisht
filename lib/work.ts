@@ -1,3 +1,5 @@
+import type { TechId } from "./tech";
+
 export type WorkCategory = "tattoos" | "drawings" | "software" | "design";
 
 export interface WorkDetails {
@@ -15,7 +17,10 @@ export interface WorkItem {
   year: string;
   wide?: boolean;
   imageUrl?: string;
+  revealGradient?: string;
   link?: string;
+  repo?: string;
+  stack?: TechId[];
   details?: WorkDetails;
 }
 
@@ -26,11 +31,15 @@ export const WORK_ITEMS: WorkItem[] = [
     category: "software",
     aspect: "square",
     bg: "#A89880",
+    revealGradient:
+      "linear-gradient(to right, #2a2520 0% 14.28%, #4a423a 14.28% 28.57%, #6e6358 28.57% 42.85%, #8d8276 42.85% 57.14%, #aca194 57.14% 71.42%, #c8bfb1 71.42% 85.71%, #e3dccd 85.71% 100%)",
     year: "2026",
-    link: "https://github.com/welcomeneil/tones",
+    link: "https://frontend-chi-pink-19.vercel.app/",
+    repo: "https://github.com/welcomeneil/tones",
+    stack: ["nextjs", "typescript", "tailwind", "vercel"],
     details: {
       overview: "an image analysis & value-reference tool that extracts 'n'-values from a reference image, renders a palette, and maps them across the original image.",
-      role: "a project for artists first; not an algorithm demo.\n\nvalue palette constrained to drawing conventions (3, 5, 7, 9 — up to 15) instead of chasing a pixel-perfect granularity no artist actually uses.\n\ntested histogram, k-means, and otsu segmentation — eye-test wins over quantitative metrics since this is a visual aid for artists.\n\nnext.js frontend | fastapi backend on fly | deployed via vercel",
+      role: "a project for artists first; not an algorithm demo.\n\nthe value palette is constrained to drawing conventions (values: 3, 5, 7, 9 — up to 15), rather than chasing a pixel-perfect granularity palette that no artist would actually use.\n\ntested histogram, k-means, and otsu segmentation — eye-test wins over quantitative metrics since this is a visual aid for artists.",
     },
   },
   {
