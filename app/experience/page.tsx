@@ -57,6 +57,7 @@ const skills = [
   "React",
   "Next.js",
   "Node.js",
+  "LangGraph/LangChain",
   "Supabase",
   "PostgreSQL",
   "AWS",
