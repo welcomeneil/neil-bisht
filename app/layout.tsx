@@ -21,7 +21,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Neil",
+  title: "neil bisht",
   description: "Neil makes pretty things — in ink, in pixels, in experience.",
 };
 
