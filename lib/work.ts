@@ -17,6 +17,7 @@ export interface WorkItem {
   year: string;
   wide?: boolean;
   imageUrl?: string;
+  imageContain?: boolean;
   revealGradient?: string;
   link?: string;
   repo?: string;
@@ -25,6 +26,22 @@ export interface WorkItem {
 }
 
 export const WORK_ITEMS: WorkItem[] = [
+  {
+    id: 9,
+    title: "this site",
+    category: "software",
+    aspect: "square",
+    bg: "#A09078",
+    year: "2026",
+    imageUrl: "/work/signature.png",
+    imageContain: true,
+    repo: "https://github.com/welcomeneil/neil-bisht",
+    stack: ["nextjs", "typescript", "tailwind", "react", "framer", "vercel"],
+    details: {
+      overview: "designed, written, and built end-to-end",
+      role: "typography-first warm minimalism.\n\nthe work grid intentionally hides images behind warm color blocks to move away from the 'instagram feed' pattern where competing images dilute attention.\n\ninspired by editorials.",
+    },
+  },
   {
     id: 8,
     title: "tone zone",
