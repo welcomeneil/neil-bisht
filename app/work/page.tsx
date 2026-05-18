@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -66,41 +66,91 @@ function WorkCard({
   );
 }
 
-function useScrollFocus(tileCount: number) {
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+function useScrollFocus() {
+  const [focusedId, setFocusedId] = useState<number | null>(null);
+  const tileRefs = useRef(new Map<number, HTMLElement>());
+
+  const registerTile = useCallback(
+    (id: number) => (el: HTMLElement | null) => {
+      if (el) tileRefs.current.set(id, el);
+      else tileRefs.current.delete(id);
+    },
+    [],
+  );
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
+    let rafId: number | null = null;
 
-    const update = () => {
-      if (!mq.matches || window.scrollY < 8 || tileCount === 0) {
-        setFocusedIndex(null);
+    const compute = () => {
+      rafId = null;
+
+      if (!mq.matches || window.scrollY < 8 || tileRefs.current.size === 0) {
+        setFocusedId(null);
         return;
       }
 
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = Math.min(window.scrollY / maxScroll, 1);
-      setFocusedIndex(Math.min(Math.floor(progress * tileCount), tileCount - 1));
+      const maxScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll <= 0) {
+        setFocusedId(null);
+        return;
+      }
+
+      // Sort tiles by on-screen visual position (top → bottom, left → right
+      // within row) so left/right tiles in a 2-col row both get their turn,
+      // and `grid-flow-row-dense` reorderings are reflected.
+      const sorted: { id: number; top: number; left: number }[] = [];
+      for (const [id, el] of tileRefs.current) {
+        const rect = el.getBoundingClientRect();
+        if (rect.height === 0) continue;
+        sorted.push({ id, top: rect.top, left: rect.left });
+      }
+      if (sorted.length === 0) {
+        setFocusedId(null);
+        return;
+      }
+      // Bucket tops to absorb sub-pixel row variance from mixed aspect ratios.
+      const ROW_TOLERANCE = 16;
+      sorted.sort((a, b) => {
+        const rowDelta = a.top - b.top;
+        if (Math.abs(rowDelta) > ROW_TOLERANCE) return rowDelta;
+        return a.left - b.left;
+      });
+
+      const progress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
+      const idx = Math.min(
+        Math.floor(progress * sorted.length),
+        sorted.length - 1,
+      );
+      setFocusedId(sorted[idx].id);
     };
 
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update, { passive: true });
+    const schedule = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(compute);
+    };
+
+    schedule();
+
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    mq.addEventListener("change", schedule);
+
+    // Catches scrollHeight changes from layout animation, image load, font swap.
+    const ro = new ResizeObserver(schedule);
+    ro.observe(document.documentElement);
 
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      mq.removeEventListener("change", schedule);
+      ro.disconnect();
     };
-  }, [tileCount]);
+  }, []);
 
-  const getOpacity = useCallback(
-    (index: number) => {
-      if (focusedIndex === null) return 1;
-      return index === focusedIndex ? 1 : 0.4;
-    },
-    [focusedIndex],
-  );
-
-  return { focusedIndex, getOpacity };
+  return { focusedId, registerTile };
 }
 
 export default function Work() {
@@ -118,8 +168,7 @@ export default function Work() {
       ? WORK_ITEMS
       : WORK_ITEMS.filter((item) => item.category === active);
 
-  const tileCount = filtered.length;
-  const { focusedIndex, getOpacity } = useScrollFocus(tileCount);
+  const { focusedId, registerTile } = useScrollFocus();
 
   return (
     <main className="min-h-screen pt-0 md:pt-16">
@@ -158,15 +207,17 @@ export default function Work() {
           layout
           className="grid grid-cols-2 md:grid-cols-3 grid-flow-row-dense gap-4 md:gap-5 md:pb-24"
         >
-          {filtered.map((item, i) => (
+          {filtered.map((item, i) => {
+            const isFocused = focusedId === item.id;
+            const opacity = focusedId === null || isFocused ? 1 : 0.4;
+            return (
             <motion.div
               key={item.id}
+              ref={registerTile(item.id)}
               layout
               initial={{ opacity: 0 }}
-              animate={{
-                opacity: getOpacity(i),
-              }}
-              transition={{ duration: mounted ? (getOpacity(i) === 1 ? 0.35 : 0.7) : 0.3, delay: mounted ? 0 : i * 0.04 }}
+              animate={{ opacity }}
+              transition={{ duration: mounted ? (opacity === 1 ? 0.35 : 0.7) : 0.3, delay: mounted ? 0 : i * 0.04 }}
               className={`group cursor-pointer ${
                 item.wide && filtered.length > 3
                   ? "col-span-2"
@@ -175,7 +226,7 @@ export default function Work() {
               onClick={() => setSelectedItem(item)}
             >
               <div className="overflow-hidden">
-                <WorkCard item={item} isFocused={focusedIndex === i} />
+                <WorkCard item={item} isFocused={isFocused} />
               </div>
               <div className="mt-2.5 flex items-start justify-between gap-3">
                 <div>
@@ -188,7 +239,8 @@ export default function Work() {
                 </div>
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </motion.div>
 
         {/* Mobile forward/back nav */}
