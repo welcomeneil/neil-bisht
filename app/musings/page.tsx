@@ -77,10 +77,10 @@ export default function Musings() {
             ← experience
           </Link>
           <Link
-            href="/work"
+            href="/about"
             className="font-sans text-[11px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
           >
-            work →
+            about →
           </Link>
         </div>
       </div>

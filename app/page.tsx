@@ -35,6 +35,16 @@ export default function Home() {
             building | drawing | tattooing {" "}
               <br className="hidden md:block" />
             </p>
+            <p className="font-sans text-[13px] md:text-[14px] text-muted leading-relaxed mt-2">
+              brooklyn, ny
+              {" · "}
+              <Link
+                href="/about"
+                className="hover:text-foreground transition-colors duration-200"
+              >
+                about ↗
+              </Link>
+            </p>
           </div>
         </section>
 
