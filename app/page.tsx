@@ -36,7 +36,7 @@ export default function Home() {
               <br className="hidden md:block" />
             </p>
             <p className="font-sans text-[13px] md:text-[14px] text-muted leading-relaxed mt-2">
-              brooklyn, ny
+              east village, ny
               {" · "}
               <Link
                 href="/about"

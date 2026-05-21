@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import NowPlaying from "@/components/now-playing";
 
 export const metadata: Metadata = {
   title: "About — Neil",
@@ -9,27 +11,24 @@ const lists: { heading: string; items: string[] }[] = [
   {
     heading: "i make",
     items: [
-      "interfaces, sometimes for screens, sometimes for skin",
-      "small software things on weekends and at odd hours",
-      "drawings, in pen, mostly faces and hands",
-      "tattoos for friends, by appointment",
+      "a lot!!",
+      "software things on weekends and at odd hours",
+      "pencil drawings that take painstakingly long",
+      "tattoos! by appointment!",
     ],
   },
   {
-    heading: "i believe",
+    heading: "i think that",
     items: [
-      "craft is a moral commitment, not an aesthetic",
-      "the best tools feel made by someone, not a team",
-      "a portfolio should earn attention, not grab for it",
-      "software and tattooing are the same impulse on different surfaces",
+      "things don't happen to you, they happen for you!",
+      "gentle reframing is generative!",
     ],
   },
   {
     heading: "i'm reading",
     items: [
-      "the creative act, rick rubin",
-      "a pattern language, christopher alexander",
-      "stay true, hua hsu",
+      "The Picture of Dorian Gray, Oscar Wilde",
+      "East of Eden, John Steinbeck",
     ],
   },
 ];
@@ -39,13 +38,26 @@ export default function About() {
     <main className="min-h-screen pt-0 md:pt-16">
       <div className="max-w-6xl mx-auto px-8 md:px-12">
         {/* Header */}
-        <section className="pt-10 md:pt-28 pb-10 md:pb-14">
-          <h1 className="font-display text-[clamp(36px,5vw,56px)] font-light italic leading-tight text-foreground">
-            about
-          </h1>
-          <p className="font-sans text-[11px] tracking-wide text-muted mt-3">
-            neil bisht — brooklyn, ny
-          </p>
+        <section className="pt-10 md:pt-28 pb-10 md:pb-14 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 className="font-display text-[clamp(36px,5vw,56px)] font-light italic leading-tight text-foreground">
+              about
+            </h1>
+            <p className="font-sans text-[11px] tracking-wide text-muted mt-3">
+              neil bisht — brooklyn, ny
+            </p>
+          </div>
+          <div className="w-32 md:w-44 shrink-0">
+            <Image
+              src="/neil.jpg"
+              alt="Portrait of Neil Bisht"
+              width={960}
+              height={1200}
+              priority
+              sizes="(max-width: 768px) 128px, 176px"
+              className="w-full h-auto rounded-[2px] border border-warm-border grayscale"
+            />
+          </div>
         </section>
 
         {/* Things lists */}
@@ -71,6 +83,14 @@ export default function About() {
               </ul>
             </div>
           ))}
+
+          {/* Live Spotify feed */}
+          <div className="border-t border-warm-border py-12 grid md:grid-cols-[200px_1fr] gap-4 md:gap-12">
+            <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted">
+              i&apos;m listening to
+            </span>
+            <NowPlaying />
+          </div>
         </section>
 
         {/* Mobile forward/back nav */}
