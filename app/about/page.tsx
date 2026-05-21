@@ -49,7 +49,7 @@ export default function About() {
           </div>
           <div className="w-32 md:w-44 shrink-0">
             <Image
-              src="/neil.jpg"
+              src="/neil-portrait.jpg"
               alt="Portrait of Neil Bisht"
               width={960}
               height={1200}
