@@ -44,7 +44,7 @@ export default function About() {
               about
             </h1>
             <p className="font-sans text-[11px] tracking-wide text-muted mt-3">
-              neil bisht — brooklyn, ny
+              neil bisht — east village, ny
             </p>
           </div>
           <div className="w-32 md:w-44 shrink-0">
