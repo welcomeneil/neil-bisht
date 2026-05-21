@@ -16,7 +16,10 @@ interface Track {
   error?: boolean;
 }
 
-const POLL_INTERVAL = 1_000;
+// Minimum gap between polls. The poller is self-paced — it fires the next
+// request as soon as the previous resolves — so this only guards against a
+// very fast response spinning into a tight loop.
+const MIN_POLL_GAP = 400;
 
 function formatTime(ms: number): string {
   const total = Math.floor(ms / 1000);
@@ -33,8 +36,10 @@ export default function NowPlaying() {
 
   useEffect(() => {
     let active = true;
+    let pollId: ReturnType<typeof setTimeout>;
 
     const load = async () => {
+      const startedAt = Date.now();
       try {
         const res = await fetch("/api/spotify");
         const data: Track = await res.json();
@@ -42,16 +47,21 @@ export default function NowPlaying() {
       } catch {
         if (active) setTrack({ isPlaying: false, error: true });
       } finally {
-        if (active) setLoading(false);
+        if (active) {
+          setLoading(false);
+          // Queue the next poll immediately after this one resolves, never
+          // tighter than MIN_POLL_GAP.
+          const elapsed = Date.now() - startedAt;
+          pollId = setTimeout(load, Math.max(MIN_POLL_GAP - elapsed, 0));
+        }
       }
     };
 
     load();
-    const pollId = setInterval(load, POLL_INTERVAL);
     const tickId = setInterval(() => setNow(Date.now()), 1000);
     return () => {
       active = false;
-      clearInterval(pollId);
+      clearTimeout(pollId);
       clearInterval(tickId);
     };
   }, []);
