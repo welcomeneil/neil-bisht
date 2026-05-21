@@ -16,7 +16,7 @@ interface Track {
   error?: boolean;
 }
 
-const POLL_INTERVAL = 5_000;
+const POLL_INTERVAL = 1_000;
 
 function formatTime(ms: number): string {
   const total = Math.floor(ms / 1000);
