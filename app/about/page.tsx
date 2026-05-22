@@ -20,7 +20,7 @@ const lists: { heading: string; items: string[] }[] = [
   {
     heading: "i think that",
     items: [
-      "things don't happen to you, they happen for you!",
+      "things don't happen to you, they happen for you",
       "gentle reframing is generative!",
     ],
   },
