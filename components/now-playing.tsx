@@ -16,10 +16,10 @@ interface Track {
   error?: boolean;
 }
 
-// Minimum gap between polls. The poller is self-paced — it fires the next
-// request as soon as the previous resolves — so this only guards against a
-// very fast response spinning into a tight loop.
-const MIN_POLL_GAP = 400;
+// Minimum gap between polls. Spotify rate-limits aggressive callers (429),
+// and the progress bar ticks locally between polls anyway, so 5s is plenty
+// responsive for detecting track changes.
+const MIN_POLL_GAP = 5000;
 
 function formatTime(ms: number): string {
   const total = Math.floor(ms / 1000);

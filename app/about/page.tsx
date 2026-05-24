@@ -55,7 +55,7 @@ export default function About() {
               height={1200}
               priority
               sizes="(max-width: 768px) 128px, 176px"
-              className="w-full h-auto rounded-[2px] border border-warm-border grayscale"
+              className="w-full h-auto rounded-[2px] grayscale"
             />
           </div>
         </section>

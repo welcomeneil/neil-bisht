@@ -91,49 +91,68 @@ function mapTrack(
   };
 }
 
+// Sticky cache of the last successful lookup. Lets us degrade gracefully
+// when Spotify rate-limits (429) or briefly errors — the UI keeps showing
+// the last known track instead of falling back to "nothing to show".
+let lastTrack: Track | null = null;
+
 /**
  * Returns the currently playing track, or the most recently played track
- * if nothing is playing. Returns null if neither is available.
+ * if nothing is playing. On transient failure (rate limit, network), falls
+ * back to the last successful result. Returns null only if we've never
+ * had a successful lookup.
  */
 export async function getNowPlaying(): Promise<Track | null> {
-  const accessToken = await getAccessToken();
-  const headers = { Authorization: `Bearer ${accessToken}` };
+  try {
+    const accessToken = await getAccessToken();
+    const headers = { Authorization: `Bearer ${accessToken}` };
 
-  // Currently playing — 200 with a body when active, 204 when idle.
-  const nowRes = await fetch(NOW_PLAYING_ENDPOINT, {
-    headers,
-    cache: "no-store",
-  });
+    // Currently playing — 200 with a body when active, 204 when idle.
+    const nowRes = await fetch(NOW_PLAYING_ENDPOINT, {
+      headers,
+      cache: "no-store",
+    });
 
-  if (nowRes.status === 200) {
-    const data = (await nowRes.json()) as {
-      item?: SpotifyTrackItem;
-      is_playing?: boolean;
-      currently_playing_type?: string;
-      progress_ms?: number;
-    };
-    if (data.item && data.currently_playing_type === "track") {
-      return mapTrack(
-        data.item,
-        Boolean(data.is_playing),
-        data.progress_ms ?? 0,
-      );
+    if (nowRes.status === 200) {
+      const data = (await nowRes.json()) as {
+        item?: SpotifyTrackItem;
+        is_playing?: boolean;
+        currently_playing_type?: string;
+        progress_ms?: number;
+      };
+      if (data.item && data.currently_playing_type === "track") {
+        const track = mapTrack(
+          data.item,
+          Boolean(data.is_playing),
+          data.progress_ms ?? 0,
+        );
+        lastTrack = track;
+        return track;
+      }
     }
+
+    // Nothing playing — fall back to the most recent track.
+    const recentRes = await fetch(RECENTLY_PLAYED_ENDPOINT, {
+      headers,
+      cache: "no-store",
+    });
+
+    if (recentRes.ok) {
+      const data = (await recentRes.json()) as {
+        items?: { track: SpotifyTrackItem }[];
+      };
+      const item = data.items?.[0]?.track;
+      if (item) {
+        const track = mapTrack(item, false, 0);
+        lastTrack = track;
+        return track;
+      }
+    }
+  } catch {
+    // Fall through to the cached value below.
   }
 
-  // Nothing playing — fall back to the most recent track.
-  const recentRes = await fetch(RECENTLY_PLAYED_ENDPOINT, {
-    headers,
-    cache: "no-store",
-  });
-
-  if (recentRes.ok) {
-    const data = (await recentRes.json()) as {
-      items?: { track: SpotifyTrackItem }[];
-    };
-    const item = data.items?.[0]?.track;
-    if (item) return mapTrack(item, false, 0);
-  }
-
-  return null;
+  // Either rate-limited, errored, or both endpoints returned empty —
+  // serve the last known track if we have one.
+  return lastTrack;
 }
