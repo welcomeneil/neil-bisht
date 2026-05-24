@@ -246,10 +246,10 @@ export default function Work() {
         {/* Mobile forward/back nav */}
         <div className="md:hidden mt-10 border-t border-warm-border pt-10 pb-16 flex justify-between">
           <Link
-            href="/musings"
+            href="/about"
             className="font-sans text-[11px] tracking-wide text-muted hover:text-foreground transition-colors duration-200"
           >
-            ← musings
+            ← about
           </Link>
           <Link
             href="/experience"

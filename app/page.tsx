@@ -32,8 +32,18 @@ export default function Home() {
               cool things
             </h1>
             <p className="font-sans text-[15px] md:text-[16px] text-muted leading-relaxed max-w-md">
-            building | drawing | tattooing {" "}
+            building, drawing, tattooing {" "}
               <br className="hidden md:block" />
+            </p>
+            <p className="font-sans text-[13px] md:text-[14px] text-muted leading-relaxed mt-2">
+              east village, ny
+              {" · "}
+              <Link
+                href="/about"
+                className="hover:text-foreground transition-colors duration-200"
+              >
+                about ↗
+              </Link>
             </p>
           </div>
         </section>
