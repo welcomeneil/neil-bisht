@@ -1,4 +1,5 @@
 import type { TechId } from "./tech";
+import snapshotLogs from "@/content/snapshots.json";
 
 export type WorkCategory = "tattoos" | "drawings" | "software" | "design";
 
@@ -6,6 +7,20 @@ export interface WorkDetails {
   overview: string;
   role: string;
   learnings?: string;
+}
+
+/** One upload: the piece as it stood on a given day. Append, never edit. */
+export interface Snapshot {
+  date: string; // YYYY-MM-DD
+  message: string;
+  imageUrl: string;
+  note?: string;
+}
+
+/** Oldest first. The last snapshot is the current state of the piece. */
+export interface PieceLog {
+  status?: "wip" | "done";
+  snapshots: Snapshot[];
 }
 
 export interface WorkItem {
@@ -23,6 +38,51 @@ export interface WorkItem {
   repo?: string;
   stack?: TechId[];
   details?: WorkDetails;
+  /** Required to accept snapshots. Keys into content/snapshots.json. */
+  slug?: string;
+}
+
+/**
+ * Logs live in JSON rather than this file so /api/snapshots can append to them
+ * with a plain read-modify-write commit.
+ */
+const LOGS = snapshotLogs as Record<string, PieceLog>;
+
+export function getLog(item: WorkItem): PieceLog | undefined {
+  return item.slug ? LOGS[item.slug] : undefined;
+}
+
+export function getSnapshots(item: WorkItem): Snapshot[] {
+  return getLog(item)?.snapshots ?? [];
+}
+
+export function isWip(item: WorkItem): boolean {
+  return getLog(item)?.status === "wip";
+}
+
+export function latestSnapshot(item: WorkItem): Snapshot | undefined {
+  return getSnapshots(item).at(-1);
+}
+
+/** What the grid and modal show: the newest snapshot, else the static image. */
+export function displayImage(item: WorkItem): string | undefined {
+  return latestSnapshot(item)?.imageUrl ?? item.imageUrl;
+}
+
+/** Pieces the admin form can post a snapshot to. */
+export function snapshottablePieces(): { slug: string; title: string }[] {
+  return WORK_ITEMS.filter((i) => i.slug).map((i) => ({
+    slug: i.slug!,
+    title: i.title,
+  }));
+}
+
+const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+/** Parsed as plain integers so server and client can't disagree on timezone. */
+export function formatSnapshotDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${MONTHS[m - 1]} ${d}, ${y}`;
 }
 
 export const WORK_ITEMS: WorkItem[] = [
@@ -75,13 +135,13 @@ export const WORK_ITEMS: WorkItem[] = [
   },
   {
     id: 4,
-    title: "tonal study I (WIP)",
+    title: "tonal study I",
+    slug: "tonal-study-i",
     category: "drawings",
     aspect: "landscape",
     bg: "#B4A48C",
     year: "2024",
     wide: true,
-    imageUrl: "/work/cloud-study-01.jpeg",
     details: {
       overview: "smoking ship",
       role: "tonal / value study.\n\ngraphgear 500, 0.3 lead. paper. \n\nno smudging. building values and textures through stroke variation, pressure, speed, placement, and navigating the paper's ridges.",
@@ -90,6 +150,7 @@ export const WORK_ITEMS: WorkItem[] = [
   {
     id: 5,
     title: "tonal study II",
+    slug: "tonal-study-ii",
     category: "drawings",
     aspect: "portrait",
     bg: "#C0B49C",
@@ -99,6 +160,7 @@ export const WORK_ITEMS: WorkItem[] = [
   {
     id: 6,
     title: "gojo?",
+    slug: "gojo",
     category: "drawings",
     aspect: "portrait",
     bg: "#907868",
@@ -108,6 +170,7 @@ export const WORK_ITEMS: WorkItem[] = [
   {
     id: 7,
     title: "shinji",
+    slug: "shinji",
     category: "drawings",
     aspect: "portrait",
     bg: "#9A8A76",

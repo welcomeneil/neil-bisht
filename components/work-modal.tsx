@@ -3,8 +3,16 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import type { WorkItem } from "@/lib/work";
+import {
+  displayImage,
+  formatSnapshotDate,
+  getSnapshots,
+  isWip,
+  latestSnapshot,
+  type WorkItem,
+} from "@/lib/work";
 import TechStack from "@/components/tech-stack";
+import TimeAgo from "@/components/time-ago";
 
 export default function WorkModal({
   item,
@@ -71,9 +79,9 @@ export default function WorkModal({
                           : "16/9",
                   }}
                 >
-                  {item.imageUrl && (
+                  {displayImage(item) && (
                     <Image
-                      src={item.imageUrl}
+                      src={displayImage(item)!}
                       alt={item.title}
                       fill
                       className="object-contain"
@@ -94,6 +102,12 @@ export default function WorkModal({
                       <h2 className="font-display text-[28px] md:text-[32px] italic font-light leading-tight text-foreground">
                         {item.title}
                       </h2>
+                      {isWip(item) && latestSnapshot(item) && (
+                        <p className="font-sans text-[11px] tracking-wide text-accent mt-2">
+                          in progress ·{" "}
+                          <TimeAgo date={latestSnapshot(item)!.date} />
+                        </p>
+                      )}
                     </div>
                     <span className="font-sans text-[11px] tracking-[0.1em] uppercase text-muted shrink-0 mt-1">
                       {item.year}
@@ -139,6 +153,52 @@ export default function WorkModal({
                         </div>
                       )}
                     </>
+                  )}
+
+                  {/* Progress log — newest first */}
+                  {getSnapshots(item).length > 0 && (
+                    <div className="flex flex-col gap-2 border-t border-warm-border pt-7 pb-2">
+                      <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted">
+                        Progress
+                      </span>
+                      <ol className="flex flex-col mt-1">
+                        {getSnapshots(item)
+                          .slice()
+                          .reverse()
+                          .map((snap) => (
+                            <li
+                              key={snap.date + snap.imageUrl}
+                              className="flex gap-4 py-4 border-b border-warm-border last:border-0 last:pb-0"
+                            >
+                              <div
+                                className="relative w-16 h-16 shrink-0 overflow-hidden rounded-sm"
+                                style={{ background: item.bg }}
+                              >
+                                <Image
+                                  src={snap.imageUrl}
+                                  alt=""
+                                  fill
+                                  sizes="64px"
+                                  className="object-cover mix-blend-multiply"
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted">
+                                  {formatSnapshotDate(snap.date)}
+                                </p>
+                                <p className="font-display text-[17px] font-light leading-[1.6] text-foreground mt-1">
+                                  {snap.message}
+                                </p>
+                                {snap.note && (
+                                  <p className="font-sans text-[12px] leading-[1.7] text-muted mt-2">
+                                    {snap.note}
+                                  </p>
+                                )}
+                              </div>
+                            </li>
+                          ))}
+                      </ol>
+                    </div>
                   )}
 
                   {/* External links */}

@@ -4,8 +4,16 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { WORK_ITEMS, type WorkCategory, type WorkItem } from "@/lib/work";
+import {
+  WORK_ITEMS,
+  displayImage,
+  isWip,
+  latestSnapshot,
+  type WorkCategory,
+  type WorkItem,
+} from "@/lib/work";
 import WorkModal from "@/components/work-modal";
+import TimeAgo from "@/components/time-ago";
 
 type Filter = WorkCategory | "all";
 
@@ -31,6 +39,8 @@ function WorkCard({
         ? "aspect-[16/9]"
         : "aspect-square";
 
+  const src = displayImage(item);
+
   return (
     <div className={`w-full ${aspectClass} relative overflow-hidden group`}>
       {/* Color block — always visible base */}
@@ -40,9 +50,9 @@ function WorkCard({
       />
 
       {/* Image — revealed on hover */}
-      {item.imageUrl && (
+      {src && (
         <Image
-          src={item.imageUrl}
+          src={src}
           alt={item.title}
           fill
           sizes="(max-width: 768px) 50vw, 33vw"
@@ -210,6 +220,7 @@ export default function Work() {
           {filtered.map((item, i) => {
             const isFocused = focusedId === item.id;
             const opacity = focusedId === null || isFocused ? 1 : 0.4;
+            const latest = latestSnapshot(item);
             return (
             <motion.div
               key={item.id}
@@ -236,6 +247,11 @@ export default function Work() {
                   <p className="font-sans text-[11px] tracking-wide text-muted mt-0.5">
                     {item.category}
                   </p>
+                  {isWip(item) && latest && (
+                    <p className="font-sans text-[11px] tracking-wide text-accent mt-0.5">
+                      <TimeAgo date={latest.date} />
+                    </p>
+                  )}
                 </div>
               </div>
             </motion.div>
