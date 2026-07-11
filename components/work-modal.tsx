@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
@@ -9,6 +9,7 @@ import {
   getSnapshots,
   isWip,
   latestSnapshot,
+  type Snapshot,
   type WorkItem,
 } from "@/lib/work";
 import TechStack from "@/components/tech-stack";
@@ -21,13 +22,19 @@ export default function WorkModal({
   item: WorkItem | null;
   onClose: () => void;
 }) {
+  // The snapshot currently opened full-screen, like checking out a commit.
+  const [zoomed, setZoomed] = useState<Snapshot | null>(null);
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key !== "Escape") return;
+      // Esc backs out of the zoomed image first, then out of the modal.
+      if (zoomed) setZoomed(null);
+      else onClose();
     };
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [onClose]);
+  }, [onClose, zoomed]);
 
   useEffect(() => {
     if (item) {
@@ -168,33 +175,39 @@ export default function WorkModal({
                           .map((snap) => (
                             <li
                               key={snap.date + snap.imageUrl}
-                              className="flex gap-4 py-4 border-b border-warm-border last:border-0 last:pb-0"
+                              className="border-b border-warm-border last:border-0"
                             >
-                              <div
-                                className="relative w-16 h-16 shrink-0 overflow-hidden rounded-sm"
-                                style={{ background: item.bg }}
+                              <button
+                                type="button"
+                                onClick={() => setZoomed(snap)}
+                                className="group/snap w-full text-left flex gap-4 py-4 cursor-pointer"
                               >
-                                <Image
-                                  src={snap.imageUrl}
-                                  alt=""
-                                  fill
-                                  sizes="64px"
-                                  className="object-cover mix-blend-multiply"
-                                />
-                              </div>
-                              <div className="min-w-0">
-                                <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted">
-                                  {formatSnapshotDate(snap.date)}
-                                </p>
-                                <p className="font-display text-[17px] font-light leading-[1.6] text-foreground mt-1">
-                                  {snap.message}
-                                </p>
-                                {snap.note && (
-                                  <p className="font-sans text-[12px] leading-[1.7] text-muted mt-2">
-                                    {snap.note}
+                                <div
+                                  className="relative w-16 h-16 shrink-0 overflow-hidden rounded-sm ring-1 ring-transparent group-hover/snap:ring-foreground/25 transition-[box-shadow] duration-200"
+                                  style={{ background: item.bg }}
+                                >
+                                  <Image
+                                    src={snap.imageUrl}
+                                    alt=""
+                                    fill
+                                    sizes="64px"
+                                    className="object-cover mix-blend-multiply"
+                                  />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted">
+                                    {formatSnapshotDate(snap.date)}
                                   </p>
-                                )}
-                              </div>
+                                  <p className="font-display text-[17px] font-light leading-[1.6] text-foreground mt-1 group-hover/snap:text-accent transition-colors duration-200">
+                                    {snap.message}
+                                  </p>
+                                  {snap.note && (
+                                    <p className="font-sans text-[12px] leading-[1.7] text-muted mt-2">
+                                      {snap.note}
+                                    </p>
+                                  )}
+                                </div>
+                              </button>
                             </li>
                           ))}
                       </ol>
@@ -244,6 +257,48 @@ export default function WorkModal({
               </div>
             </motion.div>
           </div>
+
+          {/* Snapshot lightbox — the full image at that point in time */}
+          <AnimatePresence>
+            {zoomed && (
+              <motion.div
+                key="snapshot-lightbox"
+                className="absolute inset-0 z-[60] bg-foreground/85 backdrop-blur-md flex items-center justify-center p-6 md:p-10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoomed(null);
+                }}
+              >
+                <button
+                  type="button"
+                  aria-label="close image"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoomed(null);
+                  }}
+                  className="absolute top-5 right-5 font-sans text-[11px] tracking-[0.12em] uppercase text-background/70 hover:text-background transition-colors duration-200"
+                >
+                  close
+                </button>
+                <div
+                  className="relative w-full max-w-4xl h-[80vh]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Image
+                    src={zoomed.imageUrl}
+                    alt={zoomed.message}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, 896px"
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       )}
     </AnimatePresence>
