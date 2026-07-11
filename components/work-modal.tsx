@@ -155,11 +155,11 @@ export default function WorkModal({
                     </>
                   )}
 
-                  {/* Progress log — newest first */}
+                  {/* Snapshots — newest first */}
                   {getSnapshots(item).length > 0 && (
                     <div className="flex flex-col gap-2 border-t border-warm-border pt-7 pb-2">
                       <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted">
-                        Progress
+                        Snapshots
                       </span>
                       <ol className="flex flex-col mt-1">
                         {getSnapshots(item)

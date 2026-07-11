@@ -157,12 +157,9 @@ export default function AdminForm({
     <main className="min-h-screen pt-0 md:pt-16">
       <div className="max-w-lg mx-auto px-8 md:px-12">
         <section className="pt-10 md:pt-28 pb-8">
-          <h1 className="font-display text-[clamp(32px,5vw,48px)] font-light italic leading-tight text-foreground">
+          <h1 className="font-sans text-[clamp(32px,5vw,48px)] font-light tracking-tight leading-tight text-foreground">
             new snapshot
           </h1>
-          <p className="font-sans text-[12px] tracking-wide text-muted mt-2">
-            commits to the repo. live in about a minute.
-          </p>
         </section>
 
         <div className="border-t border-warm-border mb-8" />
@@ -190,7 +187,6 @@ export default function AdminForm({
               name="photo"
               type="file"
               accept="image/*"
-              capture="environment"
               required
               onChange={onPickFile}
               className="w-full font-sans text-[13px] text-muted file:mr-4 file:border file:border-warm-border file:bg-transparent file:px-4 file:py-2 file:font-sans file:text-[11px] file:uppercase file:tracking-[0.12em] file:text-foreground"
