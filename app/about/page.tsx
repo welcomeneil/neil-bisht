@@ -12,7 +12,8 @@ const lists: { heading: string; items: string[] }[] = [
     heading: "i make",
     items: [
       "a lot!!",
-      "software things on weekends and at odd hours",
+      "custom websites & storefronts. i'm always looking for new clients, and am just a message away!",
+      "software things always",
       "pencil drawings that take painstakingly long",
       "tattoos! by appointment!",
     ],

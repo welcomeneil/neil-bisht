@@ -159,6 +159,21 @@ export default function WorkModal({
                           </p>
                         </div>
                       )}
+
+                      {/* Client endorsement */}
+                      {item.details.endorsement && (
+                        <div className="flex flex-col gap-2 border-t border-warm-border pt-7 pb-2">
+                          <span className="font-sans text-[11px] tracking-[0.15em] uppercase text-muted">
+                            From the Client
+                          </span>
+                          <blockquote className="font-display text-[18px] font-light italic leading-[1.8] text-foreground whitespace-pre-wrap">
+                            &ldquo;{item.details.endorsement.quote}&rdquo;
+                          </blockquote>
+                          <p className="font-sans text-[12px] tracking-wide text-muted">
+                            — {item.details.endorsement.name}
+                          </p>
+                        </div>
+                      )}
                     </>
                   )}
 

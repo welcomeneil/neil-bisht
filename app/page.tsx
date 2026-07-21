@@ -8,7 +8,7 @@ const sections = [
   {
     href: "/work",
     label: "work",
-    description: "software, tattoos, drawings... what else?",
+    description: "client work, software, tattoos, drawings... what else?",
   },
   {
     href: "/experience",

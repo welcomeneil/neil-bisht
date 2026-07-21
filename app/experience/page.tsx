@@ -7,6 +7,19 @@ export const metadata: Metadata = {
 
 const experience = [
   {
+    company: "Freelance — Web Design & Development",
+    role: "Designer & Developer",
+    period: "2026 — Present",
+    location: "New York, NY",
+    bullets: [
+      "Design, build, and maintain custom websites for clients end-to-end — leading ideation, creative direction, design, development, and DNS migration.",
+      "Shipped a fully custom headless storefront for fashion brand Lala Blue (lalablue.com): Shopify Storefront API for products, cart, and checkout; Flodesk for marketing email; Web3Forms for customer contact.",
+      "Built a custom CMS behind a password-protected admin route so clients update site content on their own — no developer in the loop.",
+      "Continuously optimize for SEO and AEO/GEO, applying search fundamentals cemented through enterprise SEO work at Conductor.",
+      "Own each site post-launch in close, responsive client relationships — meeting regularly and iterating quickly on feedback.",
+    ],
+  },
+  {
     company: "Conductor",
     role: "Sales Development Representative",
     period: "2025 — Present",
@@ -57,6 +70,8 @@ const skills = [
   "React",
   "Next.js",
   "Node.js",
+  "Shopify",
+  "SEO / AEO / GEO",
   "LangGraph/LangChain",
   "Supabase",
   "PostgreSQL",

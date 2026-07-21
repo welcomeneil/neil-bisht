@@ -22,7 +22,8 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "neil bisht",
-  description: "Neil makes pretty things — in ink, in pixels, in experience.",
+  description:
+    "Neil Bisht is a freelance web & product designer, developer, and software engineer located in New York.",
 };
 
 export default function RootLayout({

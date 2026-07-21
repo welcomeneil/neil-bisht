@@ -12,6 +12,7 @@ import {
   SiOpencv,
   SiNumpy,
   SiFramer,
+  SiShopify,
 } from "react-icons/si";
 
 export type TechId =
@@ -26,7 +27,8 @@ export type TechId =
   | "postgres"
   | "opencv"
   | "numpy"
-  | "framer";
+  | "framer"
+  | "shopify";
 
 export const TECH: Record<TechId, { label: string; icon: IconType }> = {
   nextjs: { label: "next.js", icon: SiNextdotjs },
@@ -41,4 +43,5 @@ export const TECH: Record<TechId, { label: string; icon: IconType }> = {
   opencv: { label: "opencv", icon: SiOpencv },
   numpy: { label: "numpy", icon: SiNumpy },
   framer: { label: "framer motion", icon: SiFramer },
+  shopify: { label: "shopify", icon: SiShopify },
 };

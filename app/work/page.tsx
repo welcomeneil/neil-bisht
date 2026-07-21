@@ -19,6 +19,7 @@ type Filter = WorkCategory | "all";
 
 const filters: { value: Filter; label: string }[] = [
   { value: "all", label: "all" },
+  { value: "client work", label: "client work" },
   { value: "software", label: "software" },
   { value: "drawings", label: "drawings" },
   { value: "tattoos", label: "tattoos" },

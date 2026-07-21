@@ -6,6 +6,11 @@ const MAX_EDGE = 2000;
 const QUALITY = 0.85;
 const PASSWORD_KEY = "snapshot-password";
 
+type Aspect = "portrait" | "landscape" | "square";
+type Mode = "snapshot" | "work";
+
+const CATEGORIES = ["drawings", "tattoos", "software", "design", "client work"] as const;
+
 async function loadImage(file: File): Promise<ImageBitmap | HTMLImageElement> {
   try {
     return await createImageBitmap(file);
@@ -18,8 +23,8 @@ async function loadImage(file: File): Promise<ImageBitmap | HTMLImageElement> {
   }
 }
 
-/** Re-encodes a phone photo down to a committable JPEG, returns bare base64. */
-async function compress(file: File): Promise<string> {
+/** Re-encodes a phone photo down to a committable JPEG; also reports its aspect. */
+async function compress(file: File): Promise<{ base64: string; aspect: Aspect }> {
   const src = await loadImage(file);
   const w = "naturalWidth" in src ? src.naturalWidth : src.width;
   const h = "naturalHeight" in src ? src.naturalHeight : src.height;
@@ -44,7 +49,10 @@ async function compress(file: File): Promise<string> {
   for (let i = 0; i < bytes.length; i += CHUNK) {
     binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
   }
-  return btoa(binary);
+
+  const ratio = w / h;
+  const aspect: Aspect = ratio > 1.15 ? "landscape" : ratio < 0.87 ? "portrait" : "square";
+  return { base64: btoa(binary), aspect };
 }
 
 function todayLocal(): string {
@@ -69,18 +77,21 @@ export default function AdminForm({
 }: {
   pieces: { slug: string; title: string }[];
 }) {
+  const [mode, setMode] = useState<Mode>("snapshot");
   const [preview, setPreview] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   const formRef = useRef<HTMLFormElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
+  const yearRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  // Uncontrolled defaults: "today" and the saved password both depend on the
-  // browser, and prefilling via state would mismatch the prerendered HTML.
+  // Uncontrolled defaults depend on the browser clock / storage, so set them
+  // after mount rather than prefilling into the prerendered HTML.
   useEffect(() => {
-    if (dateRef.current && !dateRef.current.value) {
-      dateRef.current.value = todayLocal();
+    if (dateRef.current && !dateRef.current.value) dateRef.current.value = todayLocal();
+    if (yearRef.current && !yearRef.current.value) {
+      yearRef.current.value = String(new Date().getFullYear());
     }
     const saved = localStorage.getItem(PASSWORD_KEY);
     if (saved && passwordRef.current) passwordRef.current.value = saved;
@@ -109,28 +120,44 @@ export default function AdminForm({
       setStatus({ kind: "error", text: "pick a photo" });
       return;
     }
-
     const password = String(form.get("password") ?? "");
 
     try {
       setStatus({ kind: "working", text: "compressing…" });
-      const imageBase64 = await compress(file);
+      const { base64, aspect } = await compress(file);
 
       setStatus({ kind: "working", text: "committing…" });
-      const res = await fetch("/api/snapshots", {
+      const endpoint = mode === "work" ? "/api/work" : "/api/snapshots";
+      const payload =
+        mode === "work"
+          ? {
+              password,
+              category: form.get("category"),
+              title: form.get("title"),
+              year: form.get("year"),
+              overview: form.get("overview"),
+              role: form.get("role"),
+              link: form.get("link"),
+              repo: form.get("repo"),
+              wip: form.get("wip") === "on",
+              aspect,
+              imageBase64: base64,
+            }
+          : {
+              password,
+              slug: form.get("slug"),
+              date: form.get("date"),
+              message: form.get("message"),
+              note: form.get("note"),
+              markDone: form.get("markDone") === "on",
+              imageBase64: base64,
+            };
+
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          password,
-          slug: form.get("slug"),
-          date: form.get("date"),
-          message: form.get("message"),
-          note: form.get("note"),
-          markDone: form.get("markDone") === "on",
-          imageBase64,
-        }),
+        body: JSON.stringify(payload),
       });
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "upload failed");
 
@@ -142,6 +169,7 @@ export default function AdminForm({
       });
       formRef.current?.reset();
       if (dateRef.current) dateRef.current.value = todayLocal();
+      if (yearRef.current) yearRef.current.value = String(new Date().getFullYear());
       if (passwordRef.current) passwordRef.current.value = password;
     } catch (err) {
       setStatus({
@@ -153,30 +181,85 @@ export default function AdminForm({
 
   const busy = status.kind === "working";
 
+  const tab = (m: Mode, label: string) => (
+    <button
+      type="button"
+      onClick={() => {
+        setMode(m);
+        setStatus({ kind: "idle" });
+      }}
+      className={`font-sans text-[11px] tracking-wide px-4 py-1.5 border transition-all duration-200 ${
+        mode === m
+          ? "border-foreground text-foreground"
+          : "border-warm-border text-muted hover:border-foreground hover:text-foreground"
+      }`}
+    >
+      {label}
+    </button>
+  );
+
   return (
     <main className="min-h-screen pt-0 md:pt-16">
       <div className="max-w-lg mx-auto px-8 md:px-12">
-        <section className="pt-10 md:pt-28 pb-8">
+        <section className="pt-10 md:pt-28 pb-6">
           <h1 className="font-sans text-[clamp(32px,5vw,48px)] font-light tracking-tight leading-tight text-foreground">
-            new snapshot
+            {mode === "work" ? "new work" : "new snapshot"}
           </h1>
         </section>
+
+        <div className="flex gap-1 pb-8">
+          {tab("snapshot", "add snapshot")}
+          {tab("work", "new tile")}
+        </div>
 
         <div className="border-t border-warm-border mb-8" />
 
         <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-7 pb-24">
-          <div>
-            <label htmlFor="slug" className={labelClass}>
-              Piece
-            </label>
-            <select id="slug" name="slug" required className={inputClass}>
-              {pieces.map((p) => (
-                <option key={p.slug} value={p.slug}>
-                  {p.title}
-                </option>
-              ))}
-            </select>
-          </div>
+          {mode === "work" && (
+            <>
+              <div>
+                <label htmlFor="category" className={labelClass}>
+                  Category
+                </label>
+                <select id="category" name="category" required className={inputClass}>
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="title" className={labelClass}>
+                  Title
+                </label>
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  required
+                  maxLength={80}
+                  placeholder="tonal study III"
+                  className={inputClass}
+                />
+              </div>
+            </>
+          )}
+
+          {mode === "snapshot" && (
+            <div>
+              <label htmlFor="slug" className={labelClass}>
+                Piece
+              </label>
+              <select id="slug" name="slug" required className={inputClass}>
+                {pieces.map((p) => (
+                  <option key={p.slug} value={p.slug}>
+                    {p.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label htmlFor="photo" className={labelClass}>
@@ -195,45 +278,92 @@ export default function AdminForm({
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={preview}
-                alt="selected snapshot"
+                alt="selected"
                 className="mt-4 w-full object-contain max-h-72 border border-warm-border"
               />
             )}
           </div>
 
-          <div>
-            <label htmlFor="message" className={labelClass}>
-              What changed
-            </label>
-            <input
-              id="message"
-              name="message"
-              type="text"
-              required
-              maxLength={200}
-              placeholder="pushed the darks under the plume"
-              className={inputClass}
-            />
-          </div>
+          {mode === "snapshot" && (
+            <>
+              <div>
+                <label htmlFor="message" className={labelClass}>
+                  What changed
+                </label>
+                <input
+                  id="message"
+                  name="message"
+                  type="text"
+                  required
+                  maxLength={200}
+                  placeholder="pushed the darks under the plume"
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="note" className={labelClass}>
+                  Note (optional)
+                </label>
+                <textarea id="note" name="note" rows={3} className={`${inputClass} resize-none`} />
+              </div>
+              <div>
+                <label htmlFor="date" className={labelClass}>
+                  Date
+                </label>
+                <input ref={dateRef} id="date" name="date" type="date" required className={inputClass} />
+              </div>
+              <label className="flex items-center gap-3 font-sans text-[13px] text-foreground">
+                <input type="checkbox" name="markDone" className="accent-accent" />
+                mark this piece finished
+              </label>
+            </>
+          )}
 
-          <div>
-            <label htmlFor="note" className={labelClass}>
-              Note (optional)
-            </label>
-            <textarea id="note" name="note" rows={3} className={`${inputClass} resize-none`} />
-          </div>
-
-          <div>
-            <label htmlFor="date" className={labelClass}>
-              Date
-            </label>
-            <input ref={dateRef} id="date" name="date" type="date" required className={inputClass} />
-          </div>
-
-          <label className="flex items-center gap-3 font-sans text-[13px] text-foreground">
-            <input type="checkbox" name="markDone" className="accent-accent" />
-            mark this piece finished
-          </label>
+          {mode === "work" && (
+            <>
+              <div>
+                <label htmlFor="year" className={labelClass}>
+                  Year
+                </label>
+                <input ref={yearRef} id="year" name="year" type="text" inputMode="numeric" maxLength={4} className={inputClass} />
+              </div>
+              <div>
+                <label htmlFor="overview" className={labelClass}>
+                  Overview (optional)
+                </label>
+                <input
+                  id="overview"
+                  name="overview"
+                  type="text"
+                  maxLength={600}
+                  placeholder="one line — what it is"
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="role" className={labelClass}>
+                  Notes / intent (optional)
+                </label>
+                <textarea id="role" name="role" rows={4} maxLength={1200} className={`${inputClass} resize-none`} />
+              </div>
+              <div>
+                <label htmlFor="link" className={labelClass}>
+                  Link (optional)
+                </label>
+                <input id="link" name="link" type="url" placeholder="https://…" className={inputClass} />
+              </div>
+              <div>
+                <label htmlFor="repo" className={labelClass}>
+                  Repo (optional)
+                </label>
+                <input id="repo" name="repo" type="url" placeholder="https://github.com/…" className={inputClass} />
+              </div>
+              <label className="flex items-center gap-3 font-sans text-[13px] text-foreground">
+                <input type="checkbox" name="wip" className="accent-accent" />
+                work in progress — start a snapshot log
+              </label>
+            </>
+          )}
 
           <div>
             <label htmlFor="password" className={labelClass}>
@@ -255,7 +385,7 @@ export default function AdminForm({
             disabled={busy}
             className="border border-foreground text-foreground font-sans text-[11px] tracking-[0.15em] uppercase py-3.5 hover:bg-foreground hover:text-background transition-colors duration-200 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-foreground"
           >
-            {busy ? status.text : "commit snapshot"}
+            {busy ? status.text : mode === "work" ? "create tile" : "commit snapshot"}
           </button>
 
           {status.kind === "done" && (
