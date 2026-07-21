@@ -1,21 +1,5 @@
 [
   {
-    "id": 10,
-    "title": "lala blue",
-    "category": "client work",
-    "aspect": "landscape",
-    "bg": "#8C99AB",
-    "year": "2026",
-    "wide": true,
-    "revealGradient": "linear-gradient(120deg, #26334d 0%, #58709b 45%, #b9c8e0 80%, #eef2f8 100%)",
-    "link": "https://www.lalablue.com",
-    "stack": ["nextjs", "typescript", "react", "shopify", "vercel"],
-    "details": {
-      "overview": "a fully custom headless storefront for lala blue — elika's independent fashion label. shopify runs the backend; everything the customer touches is bespoke.",
-      "role": "freelance — full ownership from first call to launch and beyond: ideation, design, creative direction, development, and the dns migration to lalablue.com.\n\nshopify storefront api drives products, cart, and checkout. flodesk handles marketing email; web3forms powers the contact form.\n\nbuilt a custom cms behind a password-protected admin route so the client updates content herself — no developer in the loop.\n\ncontinuously tuned for seo and aeo/geo. i own and maintain the site, meeting with the client regularly and iterating on feedback."
-    }
-  },
-  {
     "id": 9,
     "title": "this site",
     "category": "software",
