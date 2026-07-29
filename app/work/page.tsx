@@ -4,10 +4,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   WORK_ITEMS,
   displayImage,
   isWip,
+  isCaseStudy,
   latestSnapshot,
   type WorkCategory,
   type WorkItem,
@@ -165,6 +167,7 @@ function useScrollFocus() {
 }
 
 export default function Work() {
+  const router = useRouter();
   const [active, setActive] = useState<Filter>("all");
   const [selectedItem, setSelectedItem] = useState<WorkItem | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -172,6 +175,17 @@ export default function Work() {
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 400);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Preselect the filter when linked in from elsewhere (e.g. /work?filter=client+work).
+  // The param is browser-only, so we read it once on mount; the grid still SSRs
+  // with "all". One intentional re-render — the lint rule's concern doesn't apply.
+  useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get("filter");
+    if (param && filters.some((f) => f.value === param)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActive(param as Filter);
+    }
   }, []);
 
   const filtered =
@@ -235,7 +249,11 @@ export default function Work() {
                   ? "col-span-2"
                   : ""
               }`}
-              onClick={() => setSelectedItem(item)}
+              onClick={() =>
+                isCaseStudy(item)
+                  ? router.push(`/work/${item.slug}`)
+                  : setSelectedItem(item)
+              }
             >
               <div className="overflow-hidden">
                 <WorkCard item={item} isFocused={isFocused} />
@@ -259,6 +277,13 @@ export default function Work() {
             );
           })}
         </motion.div>
+
+        {/* Empty state — e.g. client work before its first tile lands */}
+        {filtered.length === 0 && (
+          <p className="font-sans text-[14px] text-muted md:pb-24 pb-10">
+            new pieces landing here soon.
+          </p>
+        )}
 
         {/* Mobile forward/back nav */}
         <div className="md:hidden mt-10 border-t border-warm-border pt-10 pb-16 flex justify-between">

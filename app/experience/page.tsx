@@ -5,24 +5,37 @@ export const metadata: Metadata = {
   title: "Experience — Neil",
 };
 
-const experience = [
+type Job = {
+  company: string;
+  role: string;
+  period: string;
+  location: string;
+  bullets: string[];
+  link?: { href: string; label: string };
+  /** Freelance is the headline role — always renders first, regardless of authoring order. */
+  pinned?: boolean;
+};
+
+const experience: Job[] = [
   {
-    company: "Freelance — Web Design & Development",
-    role: "Designer & Developer",
-    period: "2026 — Present",
+    company: "Freelance: Web Design & Development",
+    role: "",
+    period: "Always",
     location: "New York, NY",
+    pinned: true,
     bullets: [
-      "Design, build, and maintain custom websites for clients end-to-end — leading ideation, creative direction, design, development, and DNS migration.",
+      "I build & maintain custom websites end-to-end, leading clients through: ideation, creative direction, design, development, and DNS migration.",
       "Shipped a fully custom headless storefront for fashion brand Lala Blue (lalablue.com): Shopify Storefront API for products, cart, and checkout; Flodesk for marketing email; Web3Forms for customer contact.",
-      "Built a custom CMS behind a password-protected admin route so clients update site content on their own — no developer in the loop.",
+      "Built a custom CMS behind a password-protected admin route where clients can update their sites' content without a developer in the loop.",
       "Continuously optimize for SEO and AEO/GEO, applying search fundamentals cemented through enterprise SEO work at Conductor.",
-      "Own each site post-launch in close, responsive client relationships — meeting regularly and iterating quickly on feedback.",
+      "Own each site post-launch in engaged client relationships — meeting regularly and iterating quickly on feedback.",
     ],
+    link: { href: "/work?filter=client+work", label: "view client work" },
   },
   {
     company: "Conductor",
     role: "Sales Development Representative",
-    period: "2025 — Present",
+    period: "Mar 2025 — Oct 2025",
     location: "New York, NY",
     bullets: [
       "Generate 30+ qualified meetings with enterprise leaders per quarter through targeted outbound and strategic account research.",
@@ -33,7 +46,7 @@ const experience = [
   {
     company: "Pacific Life",
     role: "Software Engineer",
-    period: "2024",
+    period: "Jul 2024 — Oct 2024",
     location: "Newport Beach, CA",
     bullets: [
       "Optimized APIs to improve response time by 15% through minimizing database roundtrips and reducing aggregate function overhead.",
@@ -44,7 +57,7 @@ const experience = [
   {
     company: "UC Irvine — Texera Project",
     role: "Undergraduate Researcher",
-    period: "2023",
+    period: "Jul 2023 — Sep 2023",
     location: "Irvine, CA",
     bullets: [
       "Collaborated with Professor Chen Li on Texera — a cloud-based no-code platform universalizing data analytics and machine learning.",
@@ -96,10 +109,12 @@ export default function Experience() {
           </h1>
         </section>
 
-        {/* Timeline */}
+        {/* Timeline — pinned roles (freelance) always lead, rest keep authored order. */}
         <section>
           <div className="flex flex-col">
-            {experience.map((job) => (
+            {[...experience]
+              .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false))
+              .map((job) => (
               <div
                 key={job.company}
                 className="border-t border-warm-border py-12 grid md:grid-cols-[200px_1fr] gap-4 md:gap-12"
@@ -134,6 +149,14 @@ export default function Experience() {
                       </li>
                     ))}
                   </ul>
+                  {job.link && (
+                    <Link
+                      href={job.link.href}
+                      className="mt-5 inline-block w-fit font-sans text-[11px] tracking-[0.12em] uppercase text-accent border-b border-accent/40 pb-1 hover:border-accent transition-colors duration-200"
+                    >
+                      {job.link.label} →
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}

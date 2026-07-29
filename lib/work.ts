@@ -43,6 +43,16 @@ export interface WorkItem {
   details?: WorkDetails;
   /** Required to accept snapshots. Keys into content/snapshots.json. */
   slug?: string;
+  /**
+   * Extra full-bleed images for the client-work case-study page (/work/[slug]),
+   * shown after the hero. Curated in work.json; order is top-to-bottom.
+   */
+  gallery?: string[];
+}
+
+/** Client-work pieces open a full-screen case study instead of the modal. */
+export function isCaseStudy(item: WorkItem): boolean {
+  return item.category === "client work" && !!item.slug;
 }
 
 /**

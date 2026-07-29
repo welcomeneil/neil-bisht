@@ -12,7 +12,6 @@ const lists: { heading: string; items: string[] }[] = [
     heading: "i make",
     items: [
       "a lot!!",
-      "custom websites & storefronts. i'm always looking for new clients, and am just a message away!",
       "software things always",
       "pencil drawings that take painstakingly long",
       "tattoos! by appointment!",
@@ -45,7 +44,7 @@ export default function About() {
               about
             </h1>
             <p className="font-sans text-[11px] tracking-wide text-muted mt-3">
-              neil bisht; east village, ny
+              neil bisht; east village, nyc
             </p>
           </div>
           <div className="w-32 md:w-44 shrink-0">
@@ -56,7 +55,7 @@ export default function About() {
               height={1200}
               priority
               sizes="(max-width: 768px) 128px, 176px"
-              className="w-full h-auto rounded-[2px] grayscale"
+              className="w-full h-auto rounded-[2px] grayscale shadow-[0_18px_40px_-12px_rgba(26,26,26,0.28)]"
             />
           </div>
         </section>

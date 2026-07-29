@@ -102,7 +102,7 @@ export default function NowPlaying() {
           alt={track.album ?? track.title}
           width={48}
           height={48}
-          className="w-12 h-12 object-cover shrink-0"
+          className="w-12 h-12 object-cover shrink-0 border border-foreground"
           unoptimized
         />
       )}

@@ -60,13 +60,13 @@ export default function Home() {
         variants={group}
         initial="hidden"
         animate="show"
-        className="max-w-6xl mx-auto px-8 md:px-12 w-full flex flex-col flex-1 justify-center md:justify-between md:pt-0 md:pb-28"
+        className="max-w-6xl mx-auto px-8 md:px-12 w-full flex flex-col flex-1 justify-center"
       >
-        {/* Hero — anchored to upper portion */}
-        <motion.section variants={group} className="pt-0 md:pt-28 max-w-3xl">
+        {/* Hero */}
+        <motion.section variants={group} className="max-w-3xl">
           <motion.h1
             variants={item}
-            className="font-display text-[clamp(48px,7vw,80px)] font-light leading-[1.05] tracking-tight text-foreground mb-6"
+            className="font-display text-[clamp(48px,7vw,80px)] font-light leading-[1.05] tracking-tight text-foreground mb-4"
           >
             neil <CyclingVerb />
             <br />
@@ -74,16 +74,9 @@ export default function Home() {
           </motion.h1>
           <motion.p
             variants={item}
-            className="font-sans text-[15px] md:text-[16px] text-muted leading-relaxed max-w-md"
+            className="font-sans text-[13px] md:text-[14px] text-muted leading-relaxed"
           >
-            building, drawing, tattooing {" "}
-            <br className="hidden md:block" />
-          </motion.p>
-          <motion.p
-            variants={item}
-            className="font-sans text-[13px] md:text-[14px] text-muted leading-relaxed mt-2"
-          >
-            east village, ny
+            east village, nyc
             {" · "}
             <Link
               href="/about"
@@ -94,8 +87,9 @@ export default function Home() {
           </motion.p>
         </motion.section>
 
-        {/* Divider + section links — anchored to bottom on mobile, close below hero on desktop */}
-        <motion.div variants={group} className="mt-10 md:mt-16">
+        {/* Divider + section links — sits a fixed gap below the hero; the whole
+            hero+nav block is centered as one unit for balanced whitespace. */}
+        <motion.div variants={group} className="mt-10 md:mt-14">
           <motion.div variants={item} className="border-t border-warm-border" />
           <motion.nav variants={group} className="flex flex-col">
             {sections.map(({ href, label, description }) => (
