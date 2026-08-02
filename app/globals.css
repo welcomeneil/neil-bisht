@@ -8,6 +8,15 @@
   --warm-border: #E2DDD5;
 }
 
+/* Radius of the cursor / tap spotlight on the landing page. Registered so it
+   can be smoothly interpolated by the Web Animations API for the tap ripple;
+   the initial value is the resting width of the desktop hover glow. */
+@property --spot-r {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 120px;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
