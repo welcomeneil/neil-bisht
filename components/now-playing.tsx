@@ -39,7 +39,6 @@ export default function NowPlaying() {
     let pollId: ReturnType<typeof setTimeout>;
 
     const load = async () => {
-      const startedAt = Date.now();
       try {
         const res = await fetch("/api/spotify");
         const data: Track = await res.json();
@@ -49,10 +48,11 @@ export default function NowPlaying() {
       } finally {
         if (active) {
           setLoading(false);
-          // Queue the next poll immediately after this one resolves, never
-          // tighter than MIN_POLL_GAP.
-          const elapsed = Date.now() - startedAt;
-          pollId = setTimeout(load, Math.max(MIN_POLL_GAP - elapsed, 0));
+          // Measured from the response, not the request: a slow or rate-limited
+          // API backs the poller off instead of spinning it. Deducting elapsed
+          // time here would floor the delay at 0 once a response outran the gap,
+          // turning the widget into a hot loop exactly when it should ease up.
+          pollId = setTimeout(load, MIN_POLL_GAP);
         }
       }
     };

@@ -16,6 +16,30 @@
         "date": "2026-07-12",
         "message": "building masts and sails",
         "imageUrl": "/work/tonal-study-i/2026-07-12-bf80.jpg"
+      },
+      {
+        "date": "2026-08-02",
+        "message": "building the smoke plume",
+        "imageUrl": "/work/tonal-study-i/2026-08-02-9941.jpg"
+      }
+    ]
+  },
+  "cathedral": {
+    "status": "wip",
+    "snapshots": [
+      {
+        "date": "2026-08-02",
+        "message": "blocking in the spire and tracery",
+        "imageUrl": "/work/cathedral/2026-08-02-a7c1.jpg"
+      }
+    ]
+  },
+  "1": {
+    "status": "wip",
+    "snapshots": [
+      {
+        "date": "2026-08-02",
+        "imageUrl": "/work/1/2026-08-02-cdf6.jpg"
       }
     ]
   }

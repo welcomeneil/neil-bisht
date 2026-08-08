@@ -15,7 +15,11 @@ export interface WorkDetails {
 /** One upload: the piece as it stood on a given day. Append, never edit. */
 export interface Snapshot {
   date: string; // YYYY-MM-DD
-  message: string;
+  /**
+   * Optional so a hand-curated entry can stand on the image alone. Uploads
+   * through /api/snapshots still require one — the form is the stricter path.
+   */
+  message?: string;
   imageUrl: string;
   note?: string;
 }

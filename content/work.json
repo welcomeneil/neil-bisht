@@ -60,6 +60,24 @@
     }
   },
   {
+    "id": 10,
+    "title": "cathedral",
+    "slug": "cathedral",
+    "category": "drawings",
+    "aspect": "portrait",
+    "bg": "#8A8070",
+    "year": "2026"
+  },
+  {
+    "id": 11,
+    "title": "1",
+    "slug": "1",
+    "category": "drawings",
+    "aspect": "square",
+    "bg": "#A89880",
+    "year": "2026"
+  },
+  {
     "id": 5,
     "title": "tonal study II",
     "slug": "tonal-study-ii",

@@ -213,9 +213,11 @@ export default function WorkModal({
                                   <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-muted">
                                     {formatSnapshotDate(snap.date)}
                                   </p>
-                                  <p className="font-display text-[17px] font-light leading-[1.6] text-foreground mt-1 group-hover/snap:text-accent transition-colors duration-200">
-                                    {snap.message}
-                                  </p>
+                                  {snap.message && (
+                                    <p className="font-display text-[17px] font-light leading-[1.6] text-foreground mt-1 group-hover/snap:text-accent transition-colors duration-200">
+                                      {snap.message}
+                                    </p>
+                                  )}
                                   {snap.note && (
                                     <p className="font-sans text-[12px] leading-[1.7] text-muted mt-2">
                                       {snap.note}
@@ -305,7 +307,7 @@ export default function WorkModal({
                 >
                   <Image
                     src={zoomed.imageUrl}
-                    alt={zoomed.message}
+                    alt={zoomed.message ?? item.title}
                     fill
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, 896px"
